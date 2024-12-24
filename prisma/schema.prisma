@@ -1,0 +1,46 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       String     @id @default(auto()) @map("_id") @db.ObjectId
+  username String     @unique
+  progress Progress[]
+  language String     @default("ru") // Поле для выбора языка
+}
+
+model Topic {
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  name  String
+  words Word[]
+}
+
+model Word {
+  id              String     @id @default(auto()) @map("_id") @db.ObjectId
+  polish          String
+  russian         String[]
+  english         String[] // Поле для английских переводов
+  correctAnswerRu String // Поле для хранения правильного ответа
+  correctAnswerEn String // Поле для хранения правильного ответа
+  topicId         String     @map("topic_id") @db.ObjectId
+  topic           Topic      @relation(fields: [topicId], references: [id])
+  Progress        Progress[]
+}
+
+model Progress {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  userId   String @map("user_id") @db.ObjectId
+  wordId   String @map("word_id") @db.ObjectId
+  attempts Int    @default(0)
+  correct  Int    @default(0)
+  stage    Int    @default(0) // Поле для хранения стадии изучения (0-3)
+  user     User   @relation(fields: [userId], references: [id])
+  word     Word   @relation(fields: [wordId], references: [id])
+
+  @@unique([userId, wordId]) // Уникальный составной индекс
+}
