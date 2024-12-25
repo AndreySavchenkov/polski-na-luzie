@@ -49,10 +49,11 @@ export default function TopicPage({ params }: TopicPageProps) {
   }
 
   return (
-    <div>
-      <h1>{topic.name}</h1>
-      <h2>Слова:</h2>
-      <TranslationExercise words={words} userId={userId!} />
+    <div className="p-4">
+      <div className="flex items-center flex-col gap-4">
+        <h1>{topic.name}</h1>
+        <TranslationExercise words={words} userId={userId!} />
+      </div>
     </div>
   );
 }

@@ -23,6 +23,7 @@ const TranslationExercise = ({ words, userId }: TranslationExerciseProps) => {
     await saveProgress(currentWord.id, isAnswerCorrect);
 
     if (isAnswerCorrect) {
+      speakWord(currentWord.polish);
       setTimeout(() => {
         setCurrentWordIndex((prevIndex) => prevIndex + 1);
         setIsCorrect(false);
@@ -49,16 +50,28 @@ const TranslationExercise = ({ words, userId }: TranslationExerciseProps) => {
     }
   };
 
+  const speakWord = (word: string) => {
+    const utterance = new SpeechSynthesisUtterance(word);
+    utterance.lang = "pl-PL";
+    window.speechSynthesis.speak(utterance);
+  };
+
   if (currentWordIndex >= words.length) {
     return <h1>Упражнение завершено!</h1>;
   }
 
   return (
-    <div>
-      <h2>{currentWord.polish}</h2>
-      <div>
+    <div className="flex flex-col gap-4">
+      <h2
+        onClick={() => speakWord(currentWord.polish)}
+        className="text-2xl font-bold text-center cursor-pointer"
+      >
+        {currentWord.polish}
+      </h2>
+      <div className="flex justify-center items-center gap-2 text-gray-600 w-[420px] flex-wrap">
         {currentWord.russian.map((answer: string) => (
           <button
+            className="p-2 rounded-md w-[150px] text-center h-[150px]"
             key={answer}
             onClick={() => handleAnswerClick(answer)}
             style={{
@@ -74,8 +87,6 @@ const TranslationExercise = ({ words, userId }: TranslationExerciseProps) => {
           </button>
         ))}
       </div>
-      {isCorrect && <p>Правильно!</p>}
-      {!isCorrect && selectedAnswer && <p>Неправильно, попробуйте снова.</p>}
     </div>
   );
 };
