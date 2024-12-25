@@ -130,11 +130,32 @@ const TranslationExercise = ({ words, userId }: TranslationExerciseProps) => {
   const speakWord = (word: string) => {
     const utterance = new SpeechSynthesisUtterance(word);
     utterance.lang = "pl-PL";
+
+    const voices = window.speechSynthesis.getVoices();
+    const polishVoice = voices.find((voice) => voice.lang === "pl-PL");
+
+    if (polishVoice) {
+      utterance.voice = polishVoice;
+    }
+
     window.speechSynthesis.speak(utterance);
   };
 
   const isLearned = (progress: Progress | null) =>
     progress && progress.correct >= 3;
+
+  const getVoices = () => {
+    const voices = window.speechSynthesis.getVoices();
+    console.log(voices);
+  };
+
+  // Вызовите эту функцию, чтобы увидеть доступные голоса
+  getVoices();
+
+  // Добавьте обработчик события для загрузки голосов
+  window.speechSynthesis.onvoiceschanged = () => {
+    getVoices();
+  };
 
   if (isLoading) {
     return <h1>Подготовка урока...</h1>;
@@ -186,7 +207,7 @@ const TranslationExercise = ({ words, userId }: TranslationExerciseProps) => {
         })}
       </div>
       {isLearned(currentWord.progress) && (
-        <p className="text-green-600">Сл��во выучено!</p>
+        <p className="text-green-600">Слово выучено!</p>
       )}
     </div>
   );
