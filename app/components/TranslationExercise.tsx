@@ -2,6 +2,7 @@
 
 import { Word } from "@/types";
 import { useState } from "react";
+import { SpeakerLoudIcon } from "@radix-ui/react-icons";
 
 interface TranslationExerciseProps {
   words: Word[];
@@ -61,13 +62,14 @@ const TranslationExercise = ({ words, userId }: TranslationExerciseProps) => {
   }
 
   return (
-    <div className="flex flex-col gap-4">
-      <h2
+    <div className="flex flex-col items-center gap-4">
+      <div
         onClick={() => speakWord(currentWord.polish)}
-        className="text-2xl font-bold text-center cursor-pointer"
+        className="flex gap-2 items-center text-2xl font-bold text-center cursor-pointer"
       >
         {currentWord.polish}
-      </h2>
+        <SpeakerLoudIcon className="w-4 h-4" />
+      </div>
       <div className="flex justify-center items-center gap-2 text-gray-600 w-[420px] flex-wrap">
         {currentWord.russian.map((answer: string) => (
           <button
