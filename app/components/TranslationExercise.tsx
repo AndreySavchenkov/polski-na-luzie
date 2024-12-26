@@ -19,6 +19,8 @@ const TranslationExercise = ({ words, userId }: TranslationExerciseProps) => {
   >([]);
   const [currentProgress, setCurrentProgress] = useState(0);
 
+  console.log(`Filtered words: ${JSON.stringify(filteredWords)}`);
+
   useEffect(() => {
     const fetchProgress = async () => {
       const responses = await Promise.all(
@@ -98,7 +100,31 @@ const TranslationExercise = ({ words, userId }: TranslationExerciseProps) => {
     if (response.ok) {
       const newWords = await response.json();
       const shuffledWords = newWords.sort(() => Math.random() - 0.5);
-      setFilteredWords(shuffledWords);
+
+      const responses = await Promise.all(
+        shuffledWords.map((word: Word) =>
+          fetch(`/api/progress/get-progress?userId=${userId}&wordId=${word.id}`)
+        )
+      );
+
+      const progressData = await Promise.all(
+        responses.map((response) => response.json())
+      );
+
+      const wordsWithProgress = shuffledWords.map(
+        (word: Word, index: number) => ({
+          ...word,
+          progress: progressData[index] || null,
+        })
+      );
+
+      const wordsToLearn = wordsWithProgress.filter(
+        (word: Word & { progress: Progress | null }) => {
+          return word.progress && word.progress.correct < 3;
+        }
+      );
+
+      setFilteredWords(wordsToLearn);
       setCurrentWordIndex(0);
       setCurrentProgress(0);
     }
@@ -138,23 +164,11 @@ const TranslationExercise = ({ words, userId }: TranslationExerciseProps) => {
       utterance.voice = polishVoice;
     }
 
+    utterance.rate = 1;
+    utterance.pitch = 1;
+    utterance.volume = 1;
+
     window.speechSynthesis.speak(utterance);
-  };
-
-  const isLearned = (progress: Progress | null) =>
-    progress && progress.correct >= 3;
-
-  const getVoices = () => {
-    const voices = window.speechSynthesis.getVoices();
-    console.log(voices);
-  };
-
-  // Вызовите эту функцию, чтобы увидеть доступные голоса
-  getVoices();
-
-  // Добавьте обработчик события для загрузки голосов
-  window.speechSynthesis.onvoiceschanged = () => {
-    getVoices();
   };
 
   if (isLoading) {
@@ -206,9 +220,6 @@ const TranslationExercise = ({ words, userId }: TranslationExerciseProps) => {
           );
         })}
       </div>
-      {isLearned(currentWord.progress) && (
-        <p className="text-green-600">Слово выучено!</p>
-      )}
     </div>
   );
 };

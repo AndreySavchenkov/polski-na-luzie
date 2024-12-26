@@ -51,7 +51,6 @@ export default function TopicPage({ params }: TopicPageProps) {
   return (
     <div className="p-4">
       <div className="flex items-center flex-col gap-4">
-        <h1>{topic.name}</h1>
         <TranslationExercise words={words} userId={userId!} />
       </div>
     </div>
