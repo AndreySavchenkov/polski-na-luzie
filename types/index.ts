@@ -28,3 +28,9 @@ export interface Topic {
   name: string;
   words: Word[];
 }
+
+export interface Dialog {
+  id: string;
+  content: string;
+  correctOrder: string[];
+}

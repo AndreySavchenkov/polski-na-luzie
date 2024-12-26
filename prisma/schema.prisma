@@ -44,3 +44,9 @@ model Progress {
 
   @@unique([userId, wordId]) // Уникальный составной индекс
 }
+
+model Dialog {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  content      String // Текст диалога
+  correctOrder String[] // Массив правильного порядка слов
+}

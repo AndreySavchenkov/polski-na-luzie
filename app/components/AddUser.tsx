@@ -60,7 +60,7 @@ const AddUser = () => {
   return (
     <div>
       {userExists ? (
-        <p>Пользователь: {userName}</p>
+        <p>{userName}</p>
       ) : (
         <form onSubmit={handleSubmit} className="flex flex-col">
           <label>

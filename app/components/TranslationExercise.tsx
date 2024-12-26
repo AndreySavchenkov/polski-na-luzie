@@ -2,7 +2,8 @@
 
 import { Word, Progress } from "@/types";
 import { useState, useEffect, useRef } from "react";
-import { SpeakerLoudIcon } from "@radix-ui/react-icons";
+import { SpeakerLoudIcon, TimerIcon } from "@radix-ui/react-icons";
+import { speak } from "@/helpers";
 
 interface TranslationExerciseProps {
   words: Word[];
@@ -69,7 +70,7 @@ const TranslationExercise = ({ words, userId }: TranslationExerciseProps) => {
     if (isAnswerCorrect) {
       setCurrentProgress((prev) => Math.min(prev + 1, 3));
       await saveProgress(currentWord.id, true);
-      speakWord(currentWord.polish);
+      speak(currentWord.polish);
     } else {
       if (currentProgress > 0) {
         setCurrentProgress((prev) => prev - 1);
@@ -154,34 +155,14 @@ const TranslationExercise = ({ words, userId }: TranslationExerciseProps) => {
     }
   };
 
-  const speakWord = (word: string) => {
-    const utterance = new SpeechSynthesisUtterance(word);
-    utterance.lang = "pl-PL";
-
-    const voices = window.speechSynthesis.getVoices();
-    const polishVoices = voices.filter((voice) => voice.lang === "pl-PL");
-
-    const zosiaVoice = polishVoices.find((voice) => voice.name === "Zosia");
-
-    const selectedVoice =
-      zosiaVoice ||
-      polishVoices.reduce((prev: SpeechSynthesisVoice | undefined, current) => {
-        return prev && prev.lang.length > current.lang.length ? prev : current;
-      }, undefined);
-
-    if (selectedVoice) {
-      utterance.voice = selectedVoice;
-    }
-
-    utterance.rate = 1;
-    utterance.pitch = 1;
-    utterance.volume = 1;
-
-    window.speechSynthesis.speak(utterance);
-  };
+  
 
   if (isLoading) {
-    return <h1>Подготовка урока...</h1>;
+    return (
+      <div className="flex gap-2 items-center justify-center mt-4">
+        <TimerIcon /> <h2>Подготовка урока...</h2>
+      </div>
+    );
   }
 
   if (currentWordIndex >= filteredWords.length) {
@@ -193,7 +174,7 @@ const TranslationExercise = ({ words, userId }: TranslationExerciseProps) => {
   return (
     <div className="flex flex-col items-center gap-4">
       <div
-        onClick={() => speakWord(currentWord.polish)}
+        onClick={() => speak(currentWord.polish)}
         className="flex gap-2 items-center text-2xl font-bold text-center cursor-pointer"
       >
         {currentWord.polish}

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Topic } from "@/types";
 
-export default function Topics() {
+export default function WordsPage() {
   const [topics, setTopics] = useState<Topic[]>([]);
 
   useEffect(() => {
@@ -27,7 +27,7 @@ export default function Topics() {
         <h1 className="text-2xl font-bold">Уроки</h1>
         {topics.map((topic) => (
           <li key={topic.id}>
-            <Link href={`/topics/${topic.id}`}>{topic.name}</Link>
+            <Link href={`/words/${topic.id}`}>{topic.name}</Link>
           </li>
         ))}
       </div>

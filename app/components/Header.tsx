@@ -7,7 +7,8 @@ export default function Header() {
       <AddUser />
       <div className="flex gap-4">
         <Link href="/">Главная</Link>
-        <Link href="/topics">Уроки</Link>
+        <Link href="/words">Слова</Link>
+        <Link  href="/dialogs">Диалоги</Link>
       </div>
     </div>
   );

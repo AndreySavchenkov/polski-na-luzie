@@ -9,7 +9,7 @@ interface TopicPageProps {
   params: Promise<{ id: string }>;
 }
 
-export default function TopicPage({ params }: TopicPageProps) {
+export default function WordPage({ params }: TopicPageProps) {
   const [topic, setTopic] = useState<Topic | null>(null);
   const [words, setWords] = useState<Word[]>([]);
 
