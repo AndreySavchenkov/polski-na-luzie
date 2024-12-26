@@ -1,7 +1,7 @@
 "use client";
 
 import { Word, Progress } from "@/types";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { SpeakerLoudIcon } from "@radix-ui/react-icons";
 
 interface TranslationExerciseProps {
@@ -18,9 +18,11 @@ const TranslationExercise = ({ words, userId }: TranslationExerciseProps) => {
     (Word & { progress: Progress | null })[]
   >([]);
   const [currentProgress, setCurrentProgress] = useState(0);
+  const isFirstRender = useRef(true);
 
   useEffect(() => {
-    const fetchProgress = async () => {
+    const fetchWordsAndProgress = async () => {
+      setIsLoading(true);
       const responses = await Promise.all(
         words.map((word) =>
           fetch(`/api/progress/get-progress?userId=${userId}&wordId=${word.id}`)
@@ -31,22 +33,23 @@ const TranslationExercise = ({ words, userId }: TranslationExerciseProps) => {
         responses.map((response) => response.json())
       );
 
-      setIsLoading(false);
-
       const wordsWithProgress = words.map((word, index) => ({
         ...word,
         progress: progressData[index] || null,
       }));
 
-      const wordsToLearn = wordsWithProgress.filter((word) => {
-        return word.progress && word.progress.correct < 3;
-      });
+      const wordsToLearn = wordsWithProgress.filter(
+        (word) => word.progress && word.progress.correct < 3
+      );
+      const shuffledWords = wordsToLearn.sort(() => Math.random() - 0.5);
 
-      setFilteredWords(wordsToLearn);
+      setFilteredWords(shuffledWords);
+      setIsLoading(false);
     };
 
-    if (words.length > 0) {
-      fetchProgress();
+    if (words.length > 0 && isFirstRender.current) {
+      fetchWordsAndProgress();
+      isFirstRender.current = false;
     }
   }, [words, userId]);
 
