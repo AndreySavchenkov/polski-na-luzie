@@ -19,8 +19,6 @@ const TranslationExercise = ({ words, userId }: TranslationExerciseProps) => {
   >([]);
   const [currentProgress, setCurrentProgress] = useState(0);
 
-  console.log(`Filtered words: ${JSON.stringify(filteredWords)}`);
-
   useEffect(() => {
     const fetchProgress = async () => {
       const responses = await Promise.all(
@@ -158,10 +156,21 @@ const TranslationExercise = ({ words, userId }: TranslationExerciseProps) => {
     utterance.lang = "pl-PL";
 
     const voices = window.speechSynthesis.getVoices();
-    const polishVoice = voices.find((voice) => voice.lang === "pl-PL");
+    const polishVoices = voices.filter((voice) => voice.lang === "pl-PL");
 
-    if (polishVoice) {
-      utterance.voice = polishVoice;
+    console.log("Доступные польские голоса:", polishVoices);
+
+    const zosiaVoice = polishVoices.find((voice) => voice.name === "Zosia");
+
+    const selectedVoice =
+      zosiaVoice ||
+      polishVoices.reduce((prev: SpeechSynthesisVoice | undefined, current) => {
+        return prev && prev.lang.length > current.lang.length ? prev : current;
+      }, undefined);
+
+    if (selectedVoice) {
+      utterance.voice = selectedVoice;
+      console.log("Выбранный голос:", selectedVoice.name);
     }
 
     utterance.rate = 1;
@@ -181,8 +190,18 @@ const TranslationExercise = ({ words, userId }: TranslationExerciseProps) => {
 
   const currentWord = filteredWords[currentWordIndex];
 
+  const testVoices = window.speechSynthesis
+    .getVoices()
+    .filter((voice) => voice.lang === "pl-PL");
+
   return (
     <div className="flex flex-col items-center gap-4">
+      <div>
+        <h1>Доступные польские голоса:</h1>
+        {testVoices.map((voice) => (
+          <div key={voice.name}>{voice.name}</div>
+        ))}
+      </div>
       <div
         onClick={() => speakWord(currentWord.polish)}
         className="flex gap-2 items-center text-2xl font-bold text-center cursor-pointer"
