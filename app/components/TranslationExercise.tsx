@@ -158,8 +158,6 @@ const TranslationExercise = ({ words, userId }: TranslationExerciseProps) => {
     const voices = window.speechSynthesis.getVoices();
     const polishVoices = voices.filter((voice) => voice.lang === "pl-PL");
 
-    console.log("Доступные польские голоса:", polishVoices);
-
     const zosiaVoice = polishVoices.find((voice) => voice.name === "Zosia");
 
     const selectedVoice =
@@ -170,7 +168,6 @@ const TranslationExercise = ({ words, userId }: TranslationExerciseProps) => {
 
     if (selectedVoice) {
       utterance.voice = selectedVoice;
-      console.log("Выбранный голос:", selectedVoice.name);
     }
 
     utterance.rate = 1;
@@ -190,18 +187,8 @@ const TranslationExercise = ({ words, userId }: TranslationExerciseProps) => {
 
   const currentWord = filteredWords[currentWordIndex];
 
-  const testVoices = window.speechSynthesis
-    .getVoices()
-    .filter((voice) => voice.lang === "pl-PL");
-
   return (
     <div className="flex flex-col items-center gap-4">
-      <div>
-        <h1>Доступные польские голоса:</h1>
-        {testVoices.map((voice) => (
-          <div key={voice.name}>{voice.name}</div>
-        ))}
-      </div>
       <div
         onClick={() => speakWord(currentWord.polish)}
         className="flex gap-2 items-center text-2xl font-bold text-center cursor-pointer"

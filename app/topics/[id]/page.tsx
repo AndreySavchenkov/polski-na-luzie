@@ -25,7 +25,6 @@ export default function TopicPage({ params }: TopicPageProps) {
       if (response.ok) {
         const topic = await response.json();
         setTopic(topic);
-        console.log(topic);
       }
     };
 
@@ -36,7 +35,6 @@ export default function TopicPage({ params }: TopicPageProps) {
       if (response.ok) {
         const words = await response.json();
         setWords(words);
-        console.log(words);
       }
     };
 
