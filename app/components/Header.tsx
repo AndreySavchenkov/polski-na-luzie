@@ -3,13 +3,13 @@ import AddUser from "./AddUser";
 
 export default function Header() {
   return (
-    <div className="flex justify-between items-center p-4 bg-gray-900">
+    <div className="flex justify-between sticky top-0 z-50 bg-gray-800 text-white shadow-lg">
       <AddUser />
-      <div className="flex gap-4">
-        <Link href="/">Главная</Link>
-        <Link href="/words">Слова</Link>
-        <Link  href="/dialogs">Диалоги</Link>
-      </div>
+      <nav className="max-w-7xl flex gap-2 py-4 px-6">
+        <Link className="hover:text-gray-400" href="/">Главная</Link>
+        <Link className="hover:text-gray-400" href="/words">Слова</Link>
+        <Link className="hover:text-gray-400" href="/dialogs">Диалоги</Link>
+      </nav>
     </div>
   );
 }

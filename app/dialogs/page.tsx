@@ -1,62 +1,50 @@
 "use client";
 
-import mainImage from "@/public/geraltAndTailor.jpg";
-import Image from "next/image";
-import { SentenceBuilder } from "./components/SentenceBuilder";
-import { useState } from "react";
+import bywajImg from "@/public/bywaj.jpg";
+import stolicaImg from "@/public/stolica.jpg";
+import farmaImg from "@/public/ferma.jpg";
+import { Dialog } from "./components/Dialog";
+import { StaticImageData } from "next/image";
 
-type OverlayText = {
-  id: string;
-  text: string;
-  position: { top: string; left: string };
+export type DialogT = {
+  title: string;
+  imageUrl: StaticImageData | string;
+  sentences: { id: string; top: string; left: string }[];
 };
 
+const dialogs: DialogT[] = [
+  {
+    title: "Bywaj!",
+    imageUrl: bywajImg,
+    sentences: [
+      { id: "676d962b0e4e9144d6a821d3", top: "24%", left: "28%" },
+      { id: "676d96a60e4e9144d6a821d7", top: "39%", left: "34%" },
+    ],
+  },
+  {
+    title: "Stolica",
+    imageUrl: stolicaImg,
+    sentences: [
+      { id: "676e96ac87319592bcb9873b", top: "7%", left: "7%" },
+      { id: "676e971587319592bcb9873f", top: "48%", left: "44%" },
+    ],
+  },
+  {
+    title: "Farma",
+    imageUrl: farmaImg,
+    sentences: [
+      { id: "676e9c9887319592bcb98743", top: "53%", left: "53%" },
+      { id: "676e9ceb87319592bcb98747", top: "30%", left: "4%" },
+    ],
+  },
+];
+
 export default function DialogsPage() {
-  const [overlayTexts, setOverlayTexts] = useState<OverlayText[]>([]);
-
-  const handleCorrectSentence = (
-    dialogId: string,
-    text: string,
-    position: { top: string; left: string }
-  ) => {
-    setOverlayTexts((prev) => [...prev, { id: dialogId, text, position }]);
-  };
-
-  const dialogId1 = "676d962b0e4e9144d6a821d3";
-  const dialogId2 = "676d96a60e4e9144d6a821d7";
-
   return (
-    <div className="flex md:flex-row flex-col  gap-4 items-center justify-center relative py-6">
-      <div className="relative h-[400px] w-[400px]">
-        <Image src={mainImage} alt="main image" fill className="object-cover" />
-        {overlayTexts.map((overlay) => (
-          <div
-            key={overlay.id}
-            className="absolute text-white font-bold bg-black bg-opacity-70 rounded p-1 max-w-[170px]"
-            style={{
-              top: overlay.position.top,
-              left: overlay.position.left,
-              fontSize: "clamp(0.8rem, 2vw, 1.2rem)", // Адаптивный размер шрифта
-            }}
-          >
-            {overlay.text}
-          </div>
-        ))}
-      </div>
-      <div className="w-full flex-1">
-        <SentenceBuilder
-          dialogId={dialogId1}
-          onCorrectSentence={(text) =>
-            handleCorrectSentence(dialogId1, text, { top: "24%", left: "28%" })
-          }
-        />
-        <SentenceBuilder
-          dialogId={dialogId2}
-          onCorrectSentence={(text) =>
-            handleCorrectSentence(dialogId2, text, { top: "39%", left: "34%" })
-          }
-        />
-      </div>
+    <div>
+      {dialogs.map((dialog, index) => (
+        <Dialog key={index} dialog={dialog} />
+      ))}
     </div>
   );
 }
