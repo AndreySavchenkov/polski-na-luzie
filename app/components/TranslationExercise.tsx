@@ -155,8 +155,6 @@ const TranslationExercise = ({ words, userId }: TranslationExerciseProps) => {
     }
   };
 
-  
-
   if (isLoading) {
     return (
       <div className="flex gap-2 items-center justify-center mt-4">

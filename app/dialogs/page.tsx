@@ -6,6 +6,7 @@ import stolicaImg from "@/public/stolica.jpg";
 import farmaImg from "@/public/ferma.jpg";
 import problemImg from "@/public/problem.jpg";
 import pogrzebImg from "@/public/pogrzeb.jpg";
+import pracaImg from "@/public/taka-praca.jpg";
 import { Dialog } from "./components/Dialog";
 import { StaticImageData } from "next/image";
 import { ChevronLeftIcon, ChevronRightIcon } from "@radix-ui/react-icons";
@@ -56,6 +57,15 @@ const dialogs: DialogT[] = [
       { id: "676ee7d387319592bcb98753", top: "25%", left: "13%" },
       { id: "676ee80e87319592bcb98757", top: "40%", left: "32%" },
       { id: "676ee84f87319592bcb9875b", top: "59%", left: "13%" },
+    ],
+  },
+  {
+    title: "Taka praca",
+    imageUrl: pracaImg,
+    sentences: [
+      { id: "676f0f3387319592bcb9875f", top: "7%", left: "7%" },
+      { id: "676f0f7a87319592bcb98763", top: "45%", left: "49%" },
+      { id: "676f0fe887319592bcb98767", top: "59%", left: "9%" },
     ],
   },
 ];
