@@ -178,7 +178,7 @@ const TranslationExercise = ({ words, userId }: TranslationExerciseProps) => {
         className="flex gap-2 items-center text-2xl font-bold text-center cursor-pointer"
       >
         {currentWord.polish}
-        <SpeakerLoudIcon className="w-4 h-4" />
+        <SpeakerLoudIcon className="w-4 h-4 active:scale-90 transition-transform" />
       </div>
       <div className="flex justify-center items-center gap-2 text-gray-600 w-[420px] flex-wrap">
         {currentWord.russian.map((answer: string) => (

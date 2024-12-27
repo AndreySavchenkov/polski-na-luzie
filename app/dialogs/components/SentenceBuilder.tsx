@@ -104,11 +104,11 @@ export const SentenceBuilder = ({ dialogId, onCorrectSentence }: Props) => {
   }
 
   return (
-    <div className="flex flex-col max-w-[400px] w-full mt-4">
+    <div className="flex flex-col max-w-[600px] mx-auto w-full mt-4">
       {!isCorrect && (
         <SpeakerLoudIcon
           onClick={() => speak(dialog.content)}
-          className="w-6 h-6 cursor-pointer mb-4"
+          className="w-6 h-6 cursor-pointer mb-4 active:scale-90 transition-transform"
         />
       )}
 
@@ -118,7 +118,7 @@ export const SentenceBuilder = ({ dialogId, onCorrectSentence }: Props) => {
             <li
               key={index}
               onClick={() => handleWordClick(word)}
-              className="cursor-pointer bg-slate-700 p-2 rounded"
+              className="cursor-pointer bg-slate-700 p-3 rounded"
             >
               {word}
             </li>
@@ -144,7 +144,7 @@ export const SentenceBuilder = ({ dialogId, onCorrectSentence }: Props) => {
               <li
                 key={index}
                 onClick={() => handleSelectedWordClick(word)}
-                className={`cursor-pointer  p-2 rounded ${
+                className={`cursor-pointer  p-3 rounded ${
                   incorrectIndexes.includes(index)
                     ? "bg-red-700"
                     : "bg-green-700"

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SentenceBuilder } from "./SentenceBuilder";
 import Image from "next/image";
 import { DialogT } from "../page";
@@ -24,12 +24,17 @@ export const Dialog = ({ dialog }: Props) => {
     setOverlayTexts((prev) => [...prev, { id: dialogId, text, position }]);
   };
 
+  useEffect(() => {
+    setOverlayTexts([]);
+  }, [dialog]);
+
   return (
-    <div className="flex md:flex-row flex-col  gap-4 items-center justify-center relative py-6">
+    <div className="flex flex-col  gap-4 items-center justify-center relative pb-4 w-full">
       <div className="relative h-[400px] max-w-[400px] w-full">
         <Image
+          key={dialog.title}
           src={dialog.imageUrl}
-          alt="main image"
+          alt={`${dialog.title} image`}
           fill
           className="object-cover"
         />
