@@ -1,95 +1,62 @@
 "use client";
 
-import { Dialog } from "@/types";
-import { useEffect, useState } from "react";
 import mainImage from "@/public/geraltAndTailor.jpg";
 import Image from "next/image";
-import { speak } from "@/helpers";
+import { SentenceBuilder } from "./components/SentenceBuilder";
+import { useState } from "react";
+
+type OverlayText = {
+  id: string;
+  text: string;
+  position: { top: string; left: string };
+};
 
 export default function DialogsPage() {
-  const [dialog, setDialog] = useState<Dialog | null>(null);
-  const [shuffleWords, setShuffleWords] = useState<string[]>([]);
-  const [selectedWords, setSelectedWords] = useState<string[]>([]);
-  const dialogId = "676d96a60e4e9144d6a821d7";
+  const [overlayTexts, setOverlayTexts] = useState<OverlayText[]>([]);
 
-  console.log(`shuffleWords->${shuffleWords}`);
-  console.log(`selectedWords->${selectedWords}`);
-  console.log(`dialog->${dialog?.correctOrder}`);
-
-  useEffect(() => {
-    const fetchDialog = async () => {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/dialogs/get-dialog-by-id?dialogId=${dialogId}`
-      );
-
-      if (response.ok) {
-        const data = await response.json();
-        console.log(`initial array -> ${data.correctOrder}`);
-        setDialog(data);
-        const shuffled = shuffleArray(data.correctOrder);
-        setShuffleWords(shuffled);
-      } else {
-        console.error("Ошибка при получении диалога");
-      }
-    };
-
-    fetchDialog();
-  }, []);
-
-  const shuffleArray = (array: string[]): string[] => {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
+  const handleCorrectSentence = (
+    dialogId: string,
+    text: string,
+    position: { top: string; left: string }
+  ) => {
+    setOverlayTexts((prev) => [...prev, { id: dialogId, text, position }]);
   };
 
-  const handleWordClick = (word: string) => {
-    if (!selectedWords.includes(word)) {
-      setSelectedWords((prev) => [...prev, word]);
-    }
-  };
-
-  const checkOrder = () => {
-    if (selectedWords.length !== dialog?.correctOrder.length) {
-      alert("Неправильный порядок. Попробуйте снова.");
-      return;
-    }
-
-    const isCorrectOrder = selectedWords.every(
-      (word, index) => word.trim() === dialog?.correctOrder[index].trim()
-    );
-
-    if (isCorrectOrder) {
-      alert("Правильный порядок! Открываем диалог.");
-      alert(dialog?.content);
-    } else {
-      alert("Неправильный порядок. Попробуйте снова.");
-    }
-  };
-
-  if (!dialog) {
-    return <div>Загрузка диалога...</div>;
-  }
+  const dialogId1 = "676d962b0e4e9144d6a821d3";
+  const dialogId2 = "676d96a60e4e9144d6a821d7";
 
   return (
-    <div className="p-10">
-      <Image src={mainImage} alt="main image" height={800} />
-      <p onClick={() => speak(dialog.content)}>{dialog.content}</p>
-      <ul className="flex flex-wrap gap-2 border p-2">
-        {shuffleWords.map((word, index) => (
-          <li
-            key={index}
-            onClick={() => handleWordClick(word)}
-            className="cursor-pointer bg-slate-700 p-2 "
+    <div className="flex md:flex-row flex-col  gap-4 items-center justify-center relative py-6">
+      <div className="relative h-[400px] w-[400px]">
+        <Image src={mainImage} alt="main image" fill className="object-cover" />
+        {overlayTexts.map((overlay) => (
+          <div
+            key={overlay.id}
+            className="absolute text-white font-bold bg-black bg-opacity-70 rounded p-1 max-w-[170px]"
+            style={{
+              top: overlay.position.top,
+              left: overlay.position.left,
+              fontSize: "clamp(0.8rem, 2vw, 1.2rem)", // Адаптивный размер шрифта
+            }}
           >
-            {word}
-          </li>
+            {overlay.text}
+          </div>
         ))}
-      </ul>
-      <h2>Собранные слова:</h2>
-      <p>{selectedWords.join(" ")}</p>
-      <button onClick={checkOrder}>Проверить порядок</button>
+      </div>
+      <div className="w-full flex-1">
+        <SentenceBuilder
+          dialogId={dialogId1}
+          onCorrectSentence={(text) =>
+            handleCorrectSentence(dialogId1, text, { top: "24%", left: "28%" })
+          }
+        />
+        <SentenceBuilder
+          dialogId={dialogId2}
+          onCorrectSentence={(text) =>
+            handleCorrectSentence(dialogId2, text, { top: "39%", left: "34%" })
+          }
+        />
+      </div>
     </div>
   );
 }

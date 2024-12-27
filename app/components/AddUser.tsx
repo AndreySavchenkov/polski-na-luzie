@@ -7,7 +7,6 @@ const AddUser = () => {
   const { userExists, checkUserExists } = useUser();
   const [username, setUsername] = useState("");
   const [language, setLanguage] = useState("ru");
-  const [userName, setUserName] = useState("");
 
   useEffect(() => {
     const storedUserId = localStorage.getItem("userId");
@@ -21,8 +20,7 @@ const AddUser = () => {
     try {
       const response = await fetch(`/api/user/get-user?userId=${id}`);
       if (response.ok) {
-        const user = await response.json();
-        setUserName(user.username);
+        await response.json();
       } else {
         console.error("Ошибка при получении имени пользователя");
       }
@@ -59,9 +57,7 @@ const AddUser = () => {
 
   return (
     <div>
-      {userExists ? (
-        <p>{userName}</p>
-      ) : (
+      {!userExists && (
         <form onSubmit={handleSubmit} className="flex flex-col">
           <label>
             Имя пользователя:
