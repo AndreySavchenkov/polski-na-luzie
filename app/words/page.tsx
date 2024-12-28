@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { Topic } from "@/types";
+import { Card } from "../components/Card";
 
 export default function WordsPage() {
   const [topics, setTopics] = useState<Topic[]>([]);
@@ -24,12 +24,16 @@ export default function WordsPage() {
   return (
     <div>
       <div className="flex flex-col gap-4 p-4">
-        <h1 className="text-2xl font-bold">Уроки</h1>
-        {topics.map((topic) => (
-          <li key={topic.id}>
-            <Link href={`/words/${topic.id}`}>{topic.name}</Link>
-          </li>
-        ))}
+        <h1 className="text-2xl font-bold">Zestawy słów</h1>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {topics.map((topic) => (
+            <Card
+              key={topic.id}
+              href={`/words/${topic.id}`}
+              title={topic.name}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );
