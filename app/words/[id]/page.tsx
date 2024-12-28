@@ -46,10 +46,14 @@ export default function WordPage({ params }: TopicPageProps) {
     return <h1>Урок не найден</h1>;
   }
 
+  if (!userId) {
+    return <h1>Юзер не найден</h1>;
+  }
+
   return (
     <div className="p-4">
       <div className="flex items-center flex-col gap-4">
-        <TranslationExercise words={words} userId={userId!} />
+        <TranslationExercise words={words} userId={userId} />
       </div>
     </div>
   );
