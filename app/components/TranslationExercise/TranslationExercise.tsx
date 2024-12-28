@@ -23,47 +23,8 @@ const TranslationExercise = ({ words, userId }: TranslationExerciseProps) => {
     (Word & { progress: Progress | null })[]
   >([]);
   const [currentProgress, setCurrentProgress] = useState(0);
+
   const isFirstRender = useRef(true);
-
-  useEffect(() => {
-    const fetchWordsAndProgress = async () => {
-      setIsLoading(true);
-      const responses = await Promise.all(
-        words.map((word) =>
-          fetch(`/api/progress/get-progress?userId=${userId}&wordId=${word.id}`)
-        )
-      );
-
-      const progressData = await Promise.all(
-        responses.map((response) => response.json())
-      );
-
-      const wordsWithProgress = words.map((word, index) => ({
-        ...word,
-        progress: progressData[index] || null,
-      }));
-
-      const wordsToLearn = wordsWithProgress.filter(
-        (word) => word.progress && word.progress.correct < 3
-      );
-      const shuffledWords = wordsToLearn.sort(() => Math.random() - 0.5);
-
-      setFilteredWords(shuffledWords);
-      setIsLoading(false);
-    };
-
-    if (words.length > 0 && isFirstRender.current) {
-      fetchWordsAndProgress();
-      isFirstRender.current = false;
-    }
-  }, [words, userId]);
-
-  useEffect(() => {
-    const currentWord = filteredWords[currentWordIndex];
-    if (currentWord) {
-      setCurrentProgress(currentWord.progress?.correct || 0);
-    }
-  }, [currentWordIndex, filteredWords]);
 
   const handleAnswerClick = async (answer: string) => {
     setSelectedAnswer(answer);
@@ -96,7 +57,7 @@ const TranslationExercise = ({ words, userId }: TranslationExerciseProps) => {
         setIsCorrect(false);
         setSelectedAnswer("");
       }
-    }, 1500);
+    }, 1000);
   };
 
   const fetchNewWords = async () => {
@@ -166,6 +127,46 @@ const TranslationExercise = ({ words, userId }: TranslationExerciseProps) => {
     },
     [userId]
   );
+
+  useEffect(() => {
+    const fetchWordsAndProgress = async () => {
+      setIsLoading(true);
+      const responses = await Promise.all(
+        words.map((word) =>
+          fetch(`/api/progress/get-progress?userId=${userId}&wordId=${word.id}`)
+        )
+      );
+
+      const progressData = await Promise.all(
+        responses.map((response) => response.json())
+      );
+
+      const wordsWithProgress = words.map((word, index) => ({
+        ...word,
+        progress: progressData[index] || null,
+      }));
+
+      const wordsToLearn = wordsWithProgress.filter(
+        (word) => word.progress && word.progress.correct < 3
+      );
+      const shuffledWords = wordsToLearn.sort(() => Math.random() - 0.5);
+
+      setFilteredWords(shuffledWords);
+      setIsLoading(false);
+    };
+
+    if (words.length > 0 && isFirstRender.current) {
+      fetchWordsAndProgress();
+      isFirstRender.current = false;
+    }
+  }, [words, userId]);
+
+  useEffect(() => {
+    const currentWord = filteredWords[currentWordIndex];
+    if (currentWord) {
+      setCurrentProgress(currentWord.progress?.correct || 0);
+    }
+  }, [currentWordIndex, filteredWords]);
 
   if (isLoading) {
     return <LoadingState />;
