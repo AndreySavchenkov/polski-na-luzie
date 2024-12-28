@@ -2,10 +2,12 @@
 
 import { Word, Progress } from "@/types";
 import { useState, useEffect, useRef } from "react";
-import { SpeakerLoudIcon } from "@radix-ui/react-icons";
 import { speak } from "@/helpers";
 import { LoadingState } from "./components/LoadingState";
 import { ErrorState } from "./components/ErrorState";
+import { WordDisplay } from "./components/WordDisplay";
+import { ProgressIndicator } from "./components/ProgressIndicator";
+import { AnswerChoice } from "./components/AnswerChoice";
 
 interface TranslationExerciseProps {
   words: Word[];
@@ -169,43 +171,22 @@ const TranslationExercise = ({ words, userId }: TranslationExerciseProps) => {
 
   return (
     <div className="flex flex-col items-center gap-4">
-      <div
-        onClick={() => speak(currentWord.polish)}
-        className="flex gap-2 items-center text-2xl font-bold text-center cursor-pointer"
-      >
-        {currentWord.polish}
-        <SpeakerLoudIcon className="w-4 h-4 active:scale-90 transition-transform" />
-      </div>
+      <WordDisplay
+        word={currentWord}
+        onSpeak={() => speak(currentWord.polish)}
+      />
       <div className="flex justify-center items-center gap-2 text-gray-600 w-[420px] flex-wrap">
         {currentWord.russian.map((answer: string) => (
-          <button
-            className={`p-2 rounded-md w-[150px] text-center h-[150px] transition-colors duration-300 ${
-              selectedAnswer === answer
-                ? isCorrect
-                  ? "bg-green-500"
-                  : "bg-red-500"
-                : "bg-white"
-            }`}
+          <AnswerChoice
             key={answer}
-            onClick={() => handleAnswerClick(answer)}
-          >
-            {answer}
-          </button>
+            answer={answer}
+            selectedAnswer={selectedAnswer}
+            isCorrect={isCorrect}
+            handleAnswerClick={handleAnswerClick}
+          />
         ))}
       </div>
-      <div className="flex gap-2">
-        {[...Array(3)].map((_, index) => {
-          const isLearned = index < currentProgress;
-          return (
-            <div
-              key={index}
-              className={`w-6 h-6 rounded-full transition-colors duration-300 ${
-                isLearned ? "bg-green-500" : "bg-gray-300"
-              }`}
-            />
-          );
-        })}
-      </div>
+      <ProgressIndicator currentProgress={currentProgress} />
     </div>
   );
 };
