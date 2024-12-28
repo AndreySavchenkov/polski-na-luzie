@@ -2,7 +2,7 @@
 
 import { Word, Progress } from "@/types";
 import { useState, useEffect, useRef, Suspense, useCallback } from "react";
-import { speak } from "@/helpers";
+import { shuffleArray, speak } from "@/helpers";
 import { LoadingState } from "./components/LoadingState";
 import { ErrorState } from "./components/ErrorState";
 import { WordDisplay } from "./components/WordDisplay";
@@ -61,39 +61,64 @@ const TranslationExercise = ({ words, userId }: TranslationExerciseProps) => {
   };
 
   const fetchNewWords = async () => {
-    const response = await fetch(
-      `/api/topics/get-words-by-topic-id?topicId=${filteredWords[0].topicId}`
-    );
-    if (response.ok) {
-      const newWords = await response.json();
-      const shuffledWords = newWords.sort(() => Math.random() - 0.5);
+    try {
+      // Добавляем AbortController для отмены запроса при необходимости
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
 
-      const responses = await Promise.all(
-        shuffledWords.map((word: Word) =>
-          fetch(`/api/progress/get-progress?userId=${userId}&wordId=${word.id}`)
-        )
+      // Получаем слова
+      const response = await fetch(
+        `/api/topics/get-words-by-topic-id?topicId=${filteredWords[0].topicId}`,
+        { signal: controller.signal }
       );
 
-      const progressData = await Promise.all(
-        responses.map((response) => response.json())
+      if (!response.ok) {
+        throw new Error("Ошибка при получении слов");
+      }
+
+      const words = await response.json();
+      const shuffledWords: Word[] = shuffleArray(words);
+
+      // Оптимизируем запрос прогресса - получаем все сразу
+      const progressResponse = await fetch(
+        `/api/progress/get-progress-batch?userId=${userId}&wordIds=${shuffledWords
+          .map((w) => w.id)
+          .join(",")}`,
+        { signal: controller.signal }
       );
 
+      if (!progressResponse.ok) {
+        throw new Error("Ошибка при получении прогресса");
+      }
+
+      const progressData = await progressResponse.json();
+      // Объединяем данные
       const wordsWithProgress = shuffledWords.map(
-        (word: Word, index: number) => ({
+        (word: Word): Word & { progress: Progress | null } => ({
           ...word,
-          progress: progressData[index] || null,
+          progress: progressData[word.id] || null,
         })
       );
 
+      // Фильтруем слова для изучения
       const wordsToLearn = wordsWithProgress.filter(
-        (word: Word & { progress: Progress | null }) => {
-          return word.progress && word.progress.correct < 3;
-        }
+        (word: Word & { progress: Progress | null }) =>
+          !word.progress || word.progress.correct < 3
       );
+
+      clearTimeout(timeoutId);
+
+      if (wordsToLearn.length === 0) {
+        setIsLoading(false);
+        return;
+      }
 
       setFilteredWords(wordsToLearn);
       setCurrentWordIndex(0);
       setCurrentProgress(0);
+    } catch (error) {
+      console.error("Ошибка при загрузке слов:", error);
+      setIsLoading(false);
     }
   };
 

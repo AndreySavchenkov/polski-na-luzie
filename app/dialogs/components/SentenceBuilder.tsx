@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { shuffleWordsArray, speak } from "@/helpers";
+import { shuffleArray, speak } from "@/helpers";
 import { Dialog } from "@/types";
 import { SpeakerLoudIcon } from "@radix-ui/react-icons";
 
@@ -26,7 +26,7 @@ export const SentenceBuilder = ({ dialogId, onCorrectSentence }: Props) => {
       if (response.ok) {
         const data = await response.json();
         setDialog(data);
-        const shuffled = shuffleWordsArray([...data.correctOrder]);
+        const shuffled = shuffleArray([...data.correctOrder]);
         setShuffleWords(shuffled);
       } else {
         console.error("Ошибка при получении диалога");
@@ -78,7 +78,7 @@ export const SentenceBuilder = ({ dialogId, onCorrectSentence }: Props) => {
 
   const resetWords = () => {
     if (dialog) {
-      const shuffled = shuffleWordsArray([...dialog.correctOrder]);
+      const shuffled = shuffleArray([...dialog.correctOrder]);
       setShuffleWords(shuffled);
       setSelectedWords([]);
       setIncorrectIndexes([]);
