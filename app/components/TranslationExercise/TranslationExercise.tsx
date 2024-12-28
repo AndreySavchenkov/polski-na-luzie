@@ -1,7 +1,7 @@
 "use client";
 
 import { Word, Progress } from "@/types";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import { speak } from "@/helpers";
 import { LoadingState } from "./components/LoadingState";
 import { ErrorState } from "./components/ErrorState";
@@ -171,22 +171,24 @@ const TranslationExercise = ({ words, userId }: TranslationExerciseProps) => {
 
   return (
     <div className="flex flex-col items-center gap-4">
-      <WordDisplay
-        word={currentWord}
-        onSpeak={() => speak(currentWord.polish)}
-      />
-      <div className="flex justify-center items-center gap-2 text-gray-600 w-[420px] flex-wrap">
-        {currentWord.russian.map((answer: string) => (
-          <AnswerChoice
-            key={answer}
-            answer={answer}
-            selectedAnswer={selectedAnswer}
-            isCorrect={isCorrect}
-            handleAnswerClick={handleAnswerClick}
-          />
-        ))}
-      </div>
-      <ProgressIndicator currentProgress={currentProgress} />
+      <Suspense fallback={<LoadingState />}>
+        <WordDisplay
+          word={currentWord}
+          onSpeak={() => speak(currentWord.polish)}
+        />
+        <div className="flex justify-center items-center gap-2 text-gray-600 w-[420px] flex-wrap">
+          {currentWord.russian.map((answer: string) => (
+            <AnswerChoice
+              key={answer}
+              answer={answer}
+              selectedAnswer={selectedAnswer}
+              isCorrect={isCorrect}
+              handleAnswerClick={handleAnswerClick}
+            />
+          ))}
+        </div>
+        <ProgressIndicator currentProgress={currentProgress} />
+      </Suspense>
     </div>
   );
 };
