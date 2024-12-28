@@ -1,7 +1,7 @@
 "use client";
 
 import { Word, Progress } from "@/types";
-import { useState, useEffect, useRef, Suspense } from "react";
+import { useState, useEffect, useRef, Suspense, useCallback } from "react";
 import { speak } from "@/helpers";
 import { LoadingState } from "./components/LoadingState";
 import { ErrorState } from "./components/ErrorState";
@@ -136,28 +136,36 @@ const TranslationExercise = ({ words, userId }: TranslationExerciseProps) => {
     }
   };
 
-  const saveProgress = async (
-    wordId: string,
-    isCorrect: boolean,
-    correct?: number
-  ) => {
-    try {
-      await fetch("/api/progress/save", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userId,
-          wordId,
-          isCorrect,
-          correct: correct !== undefined ? correct : undefined,
-        }),
-      });
-    } catch (error) {
-      console.error("Ошибка при сохранении прогресса:", error);
-    }
-  };
+  const saveProgress = useCallback(
+    async (wordId: string, isCorrect: boolean, correct?: number) => {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+      try {
+        await fetch("/api/progress/save", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId,
+            wordId,
+            isCorrect,
+            correct: correct !== undefined ? correct : undefined,
+          }),
+          signal: controller.signal,
+        });
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (error: any) {
+        if (error.name === "AbortError") {
+          console.log("Запрос был отменен из-за таймаута");
+        } else {
+          console.error("Ошибка при сохранении прогресса:", error);
+        }
+      } finally {
+        clearTimeout(timeoutId);
+      }
+    },
+    [userId]
+  );
 
   if (isLoading) {
     return <LoadingState />;
