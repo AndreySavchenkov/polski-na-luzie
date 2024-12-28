@@ -1,6 +1,6 @@
 "use client";
 
-import TranslationExercise from "@/app/components/TranslationExercise";
+import TranslationExercise from "@/app/components/TranslationExercise/TranslationExercise";
 import { useUser } from "@/context/UserContext";
 import { Topic, Word } from "@/types";
 import { useEffect, useState, use } from "react";

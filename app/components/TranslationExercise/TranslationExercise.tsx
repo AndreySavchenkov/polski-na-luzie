@@ -2,8 +2,10 @@
 
 import { Word, Progress } from "@/types";
 import { useState, useEffect, useRef } from "react";
-import { SpeakerLoudIcon, TimerIcon } from "@radix-ui/react-icons";
+import { SpeakerLoudIcon } from "@radix-ui/react-icons";
 import { speak } from "@/helpers";
+import { LoadingState } from "./components/LoadingState";
+import { ErrorState } from "./components/ErrorState";
 
 interface TranslationExerciseProps {
   words: Word[];
@@ -156,15 +158,11 @@ const TranslationExercise = ({ words, userId }: TranslationExerciseProps) => {
   };
 
   if (isLoading) {
-    return (
-      <div className="flex gap-2 items-center justify-center mt-4">
-        <TimerIcon /> <h2>Подготовка урока...</h2>
-      </div>
-    );
+    return <LoadingState />;
   }
 
   if (currentWordIndex >= filteredWords.length) {
-    return <h1>Все слова выучены!</h1>;
+    return <ErrorState />;
   }
 
   const currentWord = filteredWords[currentWordIndex];
