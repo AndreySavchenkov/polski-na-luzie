@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { SentenceBuilder } from "./SentenceBuilder";
 import Image from "next/image";
-import { DialogT } from "../page";
+import { DialogT } from "../[setId]/page";
 
 type OverlayText = {
   id: string;
@@ -33,7 +33,7 @@ export const Dialog = ({ dialog }: Props) => {
       <div className="relative h-[400px] max-w-[400px] w-full">
         <Image
           key={dialog.title}
-          src={dialog.imageUrl}
+          src={dialog.imagePath}
           alt={`${dialog.title} image`}
           fill
           className="object-cover"
@@ -43,8 +43,8 @@ export const Dialog = ({ dialog }: Props) => {
             key={overlay.id}
             className="absolute text-white font-bold bg-black bg-opacity-70 rounded p-1 max-w-[170px]"
             style={{
-              top: overlay.position.top,
-              left: overlay.position.left,
+              top: `${overlay.position.top}%`,
+              left: `${overlay.position.left}%`,
               fontSize: "clamp(0.8rem, 2vw, 1.2rem)", // Адаптивный размер шрифта
             }}
           >
@@ -57,6 +57,7 @@ export const Dialog = ({ dialog }: Props) => {
           <SentenceBuilder
             key={sentence.id}
             dialogId={sentence.id}
+            text={sentence.text}
             onCorrectSentence={(text) =>
               handleCorrectSentence(sentence.id, text, {
                 top: sentence.top,

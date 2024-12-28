@@ -15,7 +15,7 @@ export default function Header() {
         <Link className="hover:text-gray-400" href="/words">
           Słówka
         </Link>
-        <Link className="hover:text-gray-400" href="/dialogs">
+        <Link className="hover:text-gray-400" href="/dialog-sets">
           Dialogi
         </Link>
       </nav>
