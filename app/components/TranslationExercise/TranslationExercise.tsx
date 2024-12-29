@@ -3,13 +3,13 @@
 import { Word, Progress } from "@/types";
 import { useState, useEffect, useRef, Suspense } from "react";
 import { speak } from "@/helpers";
-import { LoadingState } from "./components/LoadingState";
 import { ErrorState } from "./components/ErrorState";
 import { WordDisplay } from "./components/WordDisplay";
 import { ProgressIndicator } from "./components/ProgressIndicator";
 import { AnswerChoice } from "./components/AnswerChoice";
 import { useWordProgress } from "@/hooks/useWordProgress";
 import { CompletedState } from "./components/CompletedState";
+import { TranslationExerciseSkeleton } from "./components/TranslationExerciseSkeleton";
 
 interface TranslationExerciseProps {
   words: Word[];
@@ -103,7 +103,7 @@ const TranslationExercise = ({ words, userId }: TranslationExerciseProps) => {
   }, [currentWordIndex, filteredWords]);
 
   if (isLoading) {
-    return <LoadingState />;
+    return <TranslationExerciseSkeleton />;
   }
 
   if (filteredWords.length === 0) {
@@ -118,7 +118,7 @@ const TranslationExercise = ({ words, userId }: TranslationExerciseProps) => {
 
   return (
     <div className="flex flex-col items-center gap-8 w-full max-w-2xl mx-auto p-4">
-      <Suspense fallback={<LoadingState />}>
+      <Suspense fallback={<TranslationExerciseSkeleton />}>
         <WordDisplay
           word={currentWord}
           onSpeak={() => speak(currentWord.polish)}
