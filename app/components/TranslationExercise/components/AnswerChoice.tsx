@@ -10,8 +10,7 @@ type AnswerChoiceProps = {
 export const AnswerChoice = forwardRef<HTMLButtonElement, AnswerChoiceProps>(
   ({ answer, selectedAnswer, isCorrect, handleAnswerClick }, ref) => {
     useEffect(() => {
-      if (selectedAnswer === "") {
-        // @ts-ignore
+      if (selectedAnswer === "" && typeof ref !== "function") {
         ref?.current?.blur();
       }
     }, [selectedAnswer, ref]);
