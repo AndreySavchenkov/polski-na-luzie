@@ -31,7 +31,6 @@ const TranslationExercise = ({ words, userId }: TranslationExerciseProps) => {
   });
 
   const isFirstRender = useRef(true);
-  const buttonsRef = useRef<(HTMLButtonElement | null)[]>([]);
 
   const handleAnswerClick = async (answer: string) => {
     setSelectedAnswer(answer);
@@ -55,8 +54,6 @@ const TranslationExercise = ({ words, userId }: TranslationExerciseProps) => {
         );
       }
     }
-
-    buttonsRef.current.forEach((button) => button?.blur());
 
     setTimeout(() => {
       if (currentWordIndex + 1 >= filteredWords.length) {
@@ -127,12 +124,9 @@ const TranslationExercise = ({ words, userId }: TranslationExerciseProps) => {
           onSpeak={() => speak(currentWord.polish)}
         />
         <div className="grid grid-cols-2 gap-4 w-full">
-          {currentWord.russian.map((answer: string, index: number) => (
+          {currentWord.russian.map((answer: string) => (
             <AnswerChoice
               key={answer}
-              ref={(el: HTMLButtonElement | null) => {
-                buttonsRef.current[index] = el;
-              }}
               answer={answer}
               selectedAnswer={selectedAnswer}
               isCorrect={isCorrect}

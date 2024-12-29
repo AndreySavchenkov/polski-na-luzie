@@ -1,5 +1,3 @@
-import { forwardRef, useEffect } from "react";
-
 type AnswerChoiceProps = {
   answer: string;
   selectedAnswer: string;
@@ -7,36 +5,33 @@ type AnswerChoiceProps = {
   handleAnswerClick: (answer: string) => void;
 };
 
-export const AnswerChoice = forwardRef<HTMLButtonElement, AnswerChoiceProps>(
-  ({ answer, selectedAnswer, isCorrect, handleAnswerClick }, ref) => {
-    useEffect(() => {
-      if (selectedAnswer === "" && typeof ref !== "function") {
-        ref?.current?.blur();
-      }
-    }, [selectedAnswer, ref]);
-
-    return (
-      <button
-        ref={ref}
-        className={`w-full p-4 rounded-xl text-center text-lg font-medium 
+export const AnswerChoice = ({
+  answer,
+  selectedAnswer,
+  isCorrect,
+  handleAnswerClick,
+}: AnswerChoiceProps) => {
+  return (
+    <button
+      className={`w-full p-4 rounded-xl text-center text-lg font-medium 
         transition-all duration-300 transform active:scale-95 min-h-[100px]
-        break-words hyphens-auto outline-none
+        break-words cursor-pointer hyphens-auto outline-none focus:outline-none focus:ring-0
+        active:outline-none active:ring-0 focus-visible:outline-none
         ${
           selectedAnswer === answer
             ? isCorrect
-              ? "bg-green-600 text-white"
-              : "bg-red-600 text-white"
-            : "bg-gray-800/80 hover:bg-gray-700 text-gray-100 border border-gray-700"
+              ? "bg-green-600 text-white pointer-events-none"
+              : "bg-red-600 text-white pointer-events-none"
+            : "bg-gray-800/80"
         }`}
-        onClick={() => handleAnswerClick(answer)}
-        disabled={selectedAnswer !== ""}
-        style={{ wordBreak: "break-word", hyphens: "auto" }}
-        lang="ru"
-      >
-        {answer}
-      </button>
-    );
-  }
-);
+      onClick={() => handleAnswerClick(answer)}
+      disabled={selectedAnswer !== ""}
+      style={{ wordBreak: "break-word", hyphens: "auto" }}
+      lang="ru"
+    >
+      {answer}
+    </button>
+  );
+};
 
 AnswerChoice.displayName = "AnswerChoice";
