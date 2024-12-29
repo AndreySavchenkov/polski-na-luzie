@@ -44,7 +44,7 @@ export default function DialogSetsPage() {
           <Card
             key={set.id}
             href={`/dialog-sets/${set.id}`}
-            title={`${set.name} (${set.dialogs.length + 1})`}
+            title={`${set.name} (${set.dialogs.length})`}
           />
         ))}
       </div>

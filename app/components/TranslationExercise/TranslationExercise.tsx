@@ -44,14 +44,11 @@ const TranslationExercise = ({ words, userId }: TranslationExerciseProps) => {
       speak(currentWord.polish);
     } else {
       if (currentProgress > 0) {
-        setCurrentProgress((prev) => prev - 1);
-      }
-      if (currentWord.progress && currentWord.progress.correct > 0) {
-        await saveProgress(
-          currentWord.id,
-          false,
-          currentWord.progress.correct - 1
-        );
+        const newProgress = currentProgress - 1;
+        setCurrentProgress(newProgress);
+        await saveProgress(currentWord.id, false, newProgress);
+      } else {
+        await saveProgress(currentWord.id, false, 0);
       }
     }
 
@@ -66,17 +63,34 @@ const TranslationExercise = ({ words, userId }: TranslationExerciseProps) => {
     }, 1000);
   };
 
+  const handleReset = async () => {
+    setIsLoading(true);
+    if (words.length > 0) {
+      await Promise.all(words.map((word) => saveProgress(word.id, false, 0)));
+      const initialWords = await getInitialWords(words);
+      setFilteredWords(initialWords);
+      setCurrentWordIndex(0);
+      setCurrentProgress(0);
+      setSelectedAnswer("");
+      setIsCorrect(false);
+    }
+    setIsLoading(false);
+  };
+
   const handleFetchNewWords = async () => {
     setIsLoading(true);
     if (filteredWords.length > 0) {
       const newWords = await fetchNewWords(filteredWords[0].topicId);
       if (newWords.length === 0) {
+        setFilteredWords([]);
         setIsLoading(false);
         return;
       }
       setFilteredWords(newWords);
       setCurrentWordIndex(0);
       setCurrentProgress(0);
+      setSelectedAnswer("");
+      setIsCorrect(false);
     }
     setIsLoading(false);
   };
@@ -107,7 +121,7 @@ const TranslationExercise = ({ words, userId }: TranslationExerciseProps) => {
   }
 
   if (filteredWords.length === 0) {
-    return <CompletedState />;
+    return <CompletedState onReset={handleReset} />;
   }
 
   const currentWord = filteredWords[currentWordIndex];
