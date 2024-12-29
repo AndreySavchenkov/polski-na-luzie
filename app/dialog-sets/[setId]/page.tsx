@@ -27,7 +27,7 @@ export default function DialogSetPage() {
     const fetchDialogs = async () => {
       try {
         const response = await fetch(
-          `/api/dialog-sets/${params.setId}/dialogs`
+          `/api/dialog-sets/dialogs?setId=${params.setId}`
         );
         if (response.ok) {
           const data = await response.json();

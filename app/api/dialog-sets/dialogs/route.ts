@@ -1,14 +1,18 @@
 import { db } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { setId: string } }
-) {
+export async function GET(request: NextRequest) {
   try {
+    const { searchParams } = new URL(request.url);
+    const setId = searchParams.get("setId");
+
+    if (!setId) {
+      return new NextResponse("setId не предоставлен", { status: 400 });
+    }
+
     const dialogs = await db.dialog.findMany({
       where: {
-        setId: params.setId,
+        setId: setId,
       },
       include: {
         sentences: true,
