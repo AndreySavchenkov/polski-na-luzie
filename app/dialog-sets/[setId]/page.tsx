@@ -59,35 +59,42 @@ export default function DialogSetPage() {
   const currentDialog = dialogs[currentDialogIndex];
 
   return (
-    <div className="flex flex-col items-center space-y-4 w-full">
-      <div className="flex gap-4 min-w-[300px] justify-between items-center mt-4">
-        <button
-          onClick={handlePrevious}
-          className="flex items-center justify-center w-12 h-12 rounded-full bg-gray-800/50 backdrop-blur-sm hover:bg-gray-700 transition-colors"
-          aria-label="Предыдущий диалог"
-        >
-          <ChevronLeftIcon className="w-6 h-6" />
-        </button>
-        <h2>{currentDialog.title}</h2>
+    <div className="flex flex-col items-center justify-between  w-full min-h-[calc(100vh-56px)]">
+      <div className="flex flex-col items-center space-y-4 w-full">
+        <div className="flex gap-4 min-w-[350px] justify-between items-center mt-4">
+          <button
+            onClick={handlePrevious}
+            className="flex items-center justify-center w-12 h-12 rounded-full bg-gray-800/50 backdrop-blur-sm hover:bg-gray-700 transition-colors"
+            aria-label="Предыдущий диалог"
+          >
+            <ChevronLeftIcon className="w-6 h-6" />
+          </button>
 
-        <button
-          onClick={handleNext}
-          className="flex items-center justify-center w-12 h-12 rounded-full bg-gray-800/50 backdrop-blur-sm hover:bg-gray-700 transition-colors"
-          aria-label="Следующий диалог"
-        >
-          <ChevronRightIcon className="w-6 h-6" />
-        </button>
+          <h2 className="text-2xl font-bold">{currentDialog.title}</h2>
+
+          <button
+            onClick={handleNext}
+            className="flex items-center justify-center w-12 h-12 rounded-full bg-gray-800/50 backdrop-blur-sm hover:bg-gray-700 transition-colors"
+            aria-label="Следующий диалог"
+          >
+            <ChevronRightIcon className="w-6 h-6" />
+          </button>
+        </div>
+
+        <Dialog key={currentDialog.id} dialog={currentDialog} />
       </div>
 
-      <Dialog key={currentDialog.id} dialog={currentDialog} />
-
-      <div className="flex justify-center gap-2 pb-4">
+      <div className="flex justify-center gap-3 pb-4 mt-auto">
         {dialogs.map((_, index) => (
-          <div
+          <button
             key={index}
-            className={`w-2 h-2 rounded-full transition-colors ${
-              index === currentDialogIndex ? "bg-blue-500" : "bg-gray-600"
+            onClick={() => setCurrentDialogIndex(index)}
+            className={`w-3 h-3 rounded-full transition-all duration-300 ${
+              index === currentDialogIndex
+                ? "bg-indigo-500 scale-125"
+                : "bg-gray-800 hover:bg-gray-700"
             }`}
+            aria-label={`Перейти к диалогу ${index + 1}`}
           />
         ))}
       </div>
