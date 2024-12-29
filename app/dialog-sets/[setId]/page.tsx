@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@radix-ui/react-icons";
 import { useParams } from "next/navigation";
-import { Dialog } from "../components/Dialog";
+import { Dialog } from "../components/Dialog/Dialog";
 import { DialogT } from "@/types";
 
 export default function DialogSetPage() {
@@ -60,19 +60,37 @@ export default function DialogSetPage() {
 
   return (
     <div className="flex flex-col items-center space-y-4 w-full">
-      <div className="flex gap-4 items-center mt-4">
-        <ChevronLeftIcon
+      <div className="flex gap-4 min-w-[300px] justify-between items-center mt-4">
+        <button
           onClick={handlePrevious}
-          className="w-6 h-6 cursor-pointer active:scale-90 transition-transform"
-        />
+          className="flex items-center justify-center w-12 h-12 rounded-full bg-gray-800/50 backdrop-blur-sm hover:bg-gray-700 transition-colors"
+          aria-label="Предыдущий диалог"
+        >
+          <ChevronLeftIcon className="w-6 h-6" />
+        </button>
         <h2>{currentDialog.title}</h2>
-        <ChevronRightIcon
+
+        <button
           onClick={handleNext}
-          className="w-6 h-6 cursor-pointer active:scale-90 transition-transform"
-        />
+          className="flex items-center justify-center w-12 h-12 rounded-full bg-gray-800/50 backdrop-blur-sm hover:bg-gray-700 transition-colors"
+          aria-label="Следующий диалог"
+        >
+          <ChevronRightIcon className="w-6 h-6" />
+        </button>
       </div>
 
       <Dialog key={currentDialog.id} dialog={currentDialog} />
+
+      <div className="flex justify-center gap-2 pb-4">
+        {dialogs.map((_, index) => (
+          <div
+            key={index}
+            className={`w-2 h-2 rounded-full transition-colors ${
+              index === currentDialogIndex ? "bg-blue-500" : "bg-gray-600"
+            }`}
+          />
+        ))}
+      </div>
     </div>
   );
 }

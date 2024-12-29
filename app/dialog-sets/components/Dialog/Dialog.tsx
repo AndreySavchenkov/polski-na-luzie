@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { SentenceBuilder } from "./SentenceBuilder";
+import { SentenceBuilder } from "../SentenceBuilder";
 import Image from "next/image";
 import { DialogT } from "@/types";
 
@@ -30,13 +30,16 @@ export const Dialog = ({ dialog }: Props) => {
 
   return (
     <div className="flex flex-col  gap-4 items-center justify-center relative pb-4 w-full">
-      <div className="relative h-[400px] max-w-[400px] w-full">
+      <div className="relative w-full aspect-square max-w-[500px] mx-auto rounded-lg overflow-hidden">
         <Image
           key={dialog.title}
           src={dialog.imagePath}
           alt={`${dialog.title} image`}
           fill
-          className="object-cover"
+          priority
+          placeholder="blur"
+          blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRg..."
+          className="object-cover rounded-lg"
         />
         {overlayTexts.map((overlay) => (
           <div
