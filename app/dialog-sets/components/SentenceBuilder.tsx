@@ -47,6 +47,8 @@ export const SentenceBuilder = ({
   const [isHidden, setIsHidden] = useState(false);
   const [hasSpoken, setHasSpoken] = useState(false);
   const [correctPositions, setCorrectPositions] = useState<boolean[]>([]);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [showCorrectState, setShowCorrectState] = useState(false);
 
   useEffect(() => {
     const words = text.split(" ");
@@ -76,22 +78,29 @@ export const SentenceBuilder = ({
     if (selectedWords.length === text.split(" ").length) {
       const correctWords = text.split(" ");
       const isOrderCorrect = selectedWords.join(" ") === text;
-      setIsCorrect(isOrderCorrect);
-
-      const positions = selectedWords.map(
-        (word, index) => word === correctWords[index]
-      );
-      setCorrectPositions(positions);
 
       if (isOrderCorrect && !hasSpoken) {
-        speak(text);
-        setHasSpoken(true);
-        onCorrectSentence(text);
-        setTimeout(() => {
-          setIsHidden(true);
-        }, 1500);
+        setShowCorrectState(true);
+        requestAnimationFrame(() => {
+          speak(text);
+          setHasSpoken(true);
+
+          setTimeout(() => {
+            setIsTransitioning(true);
+            setTimeout(() => {
+              onCorrectSentence(text);
+              setTimeout(() => {
+                setIsHidden(true);
+              }, 500);
+            }, 1000);
+          }, 1000);
+        });
       } else if (!isOrderCorrect) {
         setShowRetry(true);
+        const positions = selectedWords.map(
+          (word, index) => word === correctWords[index]
+        );
+        setCorrectPositions(positions);
       }
     }
   }, [selectedWords, text, onCorrectSentence, hasSpoken]);
@@ -111,8 +120,12 @@ export const SentenceBuilder = ({
   }
 
   return (
-    <div className="flex flex-col max-w-[600px] mx-auto w-full mt-4 px-3">
-      <div className="flex justify-between items-center mb-4">
+    <div
+      className={`flex flex-col max-w-[600px] mx-auto w-full mt-4 px-3 transition-opacity duration-500 ${
+        isTransitioning ? "opacity-0" : "opacity-100"
+      }`}
+    >
+      <div className="flex justify-between items-center mb-2">
         <SpeakerLoudIcon
           onClick={handleSpeak}
           className="w-8 h-8 cursor-pointer active:scale-90 transition-transform p-1.5 bg-gray-700 rounded-full hover:bg-gray-600"
@@ -143,14 +156,17 @@ export const SentenceBuilder = ({
       )}
 
       {selectedWords.length > 0 && !isHidden && (
-        <div className="mt-4">
-          <h2
-            className={`text-lg md:text-xl font-bold mb-2 transition-colors ${
-              isCorrect ? "text-green-500" : "text-gray-200"
-            }`}
-          >
-            {isCorrect ? "Tak jest!" : "Twoja wersja:"}
-          </h2>
+        <div className="mt-2">
+          {!isCorrect && (
+            <h2
+              className={
+                "text-lg md:text-xl font-bold mb-1 transition-colors text-gray-200"
+              }
+            >
+              Twoja wersja:
+            </h2>
+          )}
+
           <div className="flex flex-wrap gap-2 p-3 rounded-lg border border-gray-700 bg-gray-800/50">
             {selectedWords.map((word, index) => (
               <WordButton
@@ -161,7 +177,9 @@ export const SentenceBuilder = ({
                 disabled={isCorrect}
                 className={`cursor-pointer px-3 py-2 rounded-lg text-sm md:text-base transition-all ${
                   selectedWords.length === text.split(" ").length
-                    ? correctPositions[index]
+                    ? showCorrectState
+                      ? "bg-green-800 hover:bg-green-700 text-white"
+                      : correctPositions[index]
                       ? "bg-green-800 hover:bg-green-700 text-white"
                       : "bg-red-800 hover:bg-red-700 text-white"
                     : "bg-gray-700 hover:bg-gray-600 text-white"

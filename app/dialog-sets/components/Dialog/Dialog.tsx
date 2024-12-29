@@ -15,6 +15,7 @@ type Props = {
 
 export const Dialog = ({ dialog }: Props) => {
   const [overlayTexts, setOverlayTexts] = useState<OverlayText[]>([]);
+  const [currentSentenceIndex, setCurrentSentenceIndex] = useState(0);
 
   const handleCorrectSentence = (
     dialogId: string,
@@ -22,14 +23,16 @@ export const Dialog = ({ dialog }: Props) => {
     position: { top: string; left: string }
   ) => {
     setOverlayTexts((prev) => [...prev, { id: dialogId, text, position }]);
+    setCurrentSentenceIndex((prev) => prev + 1);
   };
 
   useEffect(() => {
     setOverlayTexts([]);
+    setCurrentSentenceIndex(0);
   }, [dialog]);
 
   return (
-    <div className="flex flex-col  gap-4 items-center justify-center relative pb-4 w-full">
+    <div className="flex flex-col gap-2 items-center justify-center relative pb-4 w-full">
       <div className="relative w-full aspect-square max-w-[500px] mx-auto rounded-lg overflow-hidden">
         <Image
           key={dialog.title}
@@ -48,7 +51,7 @@ export const Dialog = ({ dialog }: Props) => {
             style={{
               top: `${overlay.position.top}%`,
               left: `${overlay.position.left}%`,
-              fontSize: "clamp(0.8rem, 2vw, 1.2rem)", // Адаптивный размер шрифта
+              fontSize: "clamp(0.8rem, 2vw, 1.2rem)",
             }}
           >
             {overlay.text}
@@ -56,19 +59,23 @@ export const Dialog = ({ dialog }: Props) => {
         ))}
       </div>
       <div className="w-full flex-1">
-        {dialog.sentences.map((sentence) => (
+        {currentSentenceIndex < dialog.sentences.length && (
           <SentenceBuilder
-            key={sentence.id}
-            dialogId={sentence.id}
-            text={sentence.text}
+            key={dialog.sentences[currentSentenceIndex].id}
+            dialogId={dialog.sentences[currentSentenceIndex].id}
+            text={dialog.sentences[currentSentenceIndex].text}
             onCorrectSentence={(text) =>
-              handleCorrectSentence(sentence.id, text, {
-                top: sentence.top,
-                left: sentence.left,
-              })
+              handleCorrectSentence(
+                dialog.sentences[currentSentenceIndex].id,
+                text,
+                {
+                  top: dialog.sentences[currentSentenceIndex].top,
+                  left: dialog.sentences[currentSentenceIndex].left,
+                }
+              )
             }
           />
-        ))}
+        )}
       </div>
     </div>
   );
