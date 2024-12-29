@@ -1,4 +1,4 @@
-import { forwardRef } from "react";
+import { forwardRef, useEffect } from "react";
 
 type AnswerChoiceProps = {
   answer: string;
@@ -9,12 +9,19 @@ type AnswerChoiceProps = {
 
 export const AnswerChoice = forwardRef<HTMLButtonElement, AnswerChoiceProps>(
   ({ answer, selectedAnswer, isCorrect, handleAnswerClick }, ref) => {
+    useEffect(() => {
+      if (selectedAnswer === "") {
+        // @ts-ignore
+        ref?.current?.blur();
+      }
+    }, [selectedAnswer, ref]);
+
     return (
       <button
         ref={ref}
         className={`w-full p-4 rounded-xl text-center text-lg font-medium 
         transition-all duration-300 transform active:scale-95 min-h-[100px]
-        break-words hyphens-auto
+        break-words hyphens-auto outline-none
         ${
           selectedAnswer === answer
             ? isCorrect
