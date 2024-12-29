@@ -92,19 +92,21 @@ export const useWordProgress = ({ userId }: UseWordProgressProps) => {
 
   const getInitialWords = async (words: Word[]) => {
     try {
-      const responses = await Promise.all(
-        words.map((word) =>
-          fetch(`/api/progress/get-progress?userId=${userId}&wordId=${word.id}`)
-        )
+      const response = await fetch(
+        `/api/progress/get-progress-batch?userId=${userId}&wordIds=${words
+          .map((w) => w.id)
+          .join(",")}`
       );
 
-      const progressData = await Promise.all(
-        responses.map((response) => response.json())
-      );
+      if (!response.ok) {
+        throw new Error("Ошибка при получении прогресса");
+      }
 
-      const wordsWithProgress = words.map((word, index) => ({
+      const progressData = await response.json();
+
+      const wordsWithProgress = words.map((word) => ({
         ...word,
-        progress: progressData[index] || null,
+        progress: progressData[word.id] || null,
       }));
 
       return wordsWithProgress.filter(

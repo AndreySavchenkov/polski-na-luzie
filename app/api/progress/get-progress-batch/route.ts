@@ -26,8 +26,7 @@ export async function GET(req: NextRequest) {
     const progressMap = progress.reduce((acc, curr) => {
       acc[curr.wordId] = curr;
       return acc;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    }, {} as Record<string, any>);
+    }, {} as Record<string, Progress>);
 
     return NextResponse.json(progressMap);
   } catch (error) {
