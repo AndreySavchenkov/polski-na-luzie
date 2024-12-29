@@ -5,6 +5,7 @@ import { ChevronLeftIcon, ChevronRightIcon } from "@radix-ui/react-icons";
 import { useParams } from "next/navigation";
 import { Dialog } from "../components/Dialog/Dialog";
 import { DialogT } from "@/types";
+import { DialogSetSkeleton } from "./components/DialogSetSkeleton";
 
 export default function DialogSetPage() {
   const params = useParams();
@@ -49,7 +50,7 @@ export default function DialogSetPage() {
   };
 
   if (isLoading) {
-    return <div>Загрузка...</div>;
+    return <DialogSetSkeleton />;
   }
 
   if (dialogs.length === 0) {
