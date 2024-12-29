@@ -13,15 +13,17 @@ export const AnswerChoice = ({
 }: AnswerChoiceProps) => {
   return (
     <button
-      className={`p-2 rounded-md w-[150px] text-center h-[150px] transition-colors duration-300 ${
+      className={`w-full p-6 rounded-xl text-center text-lg font-medium 
+      transition-all duration-300 transform active:scale-95 min-h-[100px]
+      ${
         selectedAnswer === answer
           ? isCorrect
-            ? "bg-green-500"
-            : "bg-red-500"
-          : "bg-white"
+            ? "bg-green-600 text-white"
+            : "bg-red-600 text-white"
+          : "bg-gray-800/80 hover:bg-gray-700 text-gray-100 border border-gray-700"
       }`}
-      key={answer}
       onClick={() => handleAnswerClick(answer)}
+      disabled={selectedAnswer !== ""}
     >
       {answer}
     </button>
