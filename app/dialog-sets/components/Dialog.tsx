@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { SentenceBuilder } from "./SentenceBuilder";
 import Image from "next/image";
-import { DialogT } from "../[setId]/page";
+import { DialogT } from "@/types";
 
 type OverlayText = {
   id: string;

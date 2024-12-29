@@ -1,17 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
-
-type DialogSet = {
-  id: string;
-  name: string;
-  dialogs: {
-    id: string;
-    title: string;
-    imagePath: string;
-  }[];
-};
+import { Card } from "../components/Card";
+import { DialogSet } from "@/types";
 
 export default function DialogSetsPage() {
   const [dialogSets, setDialogSets] = useState<DialogSet[]>([]);
@@ -35,18 +26,11 @@ export default function DialogSetsPage() {
       <h1 className="text-2xl font-bold mb-4">Наборы Диалогов</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {dialogSets.map((set) => (
-          <div key={set.id} className="border p-4 rounded-lg">
-            <h2 className="text-xl font-semibold mb-2">{set.name}</h2>
-            <ul>
-              {set.dialogs.map((dialog) => (
-                <li key={dialog.id} className="mb-2">
-                  <Link href={`/dialog-sets/${set.id}`} className="text-blue-500 hover:underline">
-                    {dialog.title}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+          <Card
+            key={set.id}
+            href={`/dialog-sets/${set.id}`}
+            title={`${set.name} (${set.dialogs.length + 1})`}
+          />
         ))}
       </div>
     </div>

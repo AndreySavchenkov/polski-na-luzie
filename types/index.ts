@@ -34,3 +34,25 @@ export interface Dialog {
   content: string;
   correctOrder: string[];
 }
+
+export interface DialogSet {
+  id: string;
+  name: string;
+  dialogs: {
+    id: string;
+    title: string;
+    imagePath: string;
+  }[];
+}
+
+export type DialogT = {
+  id: string;
+  title: string;
+  imagePath: string;
+  sentences: {
+    id: string;
+    text: string;
+    top: string;
+    left: string;
+  }[];
+};

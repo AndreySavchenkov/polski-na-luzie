@@ -4,18 +4,7 @@ import { useEffect, useState } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@radix-ui/react-icons";
 import { useParams } from "next/navigation";
 import { Dialog } from "../components/Dialog";
-
-export type DialogT = {
-  id: string;
-  title: string;
-  imagePath: string;
-  sentences: {
-    id: string;
-    text: string;
-    top: string;
-    left: string;
-  }[];
-};
+import { DialogT } from "@/types";
 
 export default function DialogSetPage() {
   const params = useParams();
