@@ -122,7 +122,7 @@ export const SentenceBuilder = ({
             onClick={resetWords}
             className="px-4 py-1.5 bg-gray-700 text-gray-200 rounded-full text-sm hover:bg-gray-600 transition-colors active:scale-95 transform border border-gray-600"
           >
-            Попробовать снова
+            Spróbuj ponownie
           </button>
         )}
       </div>
@@ -149,7 +149,7 @@ export const SentenceBuilder = ({
               isCorrect ? "text-green-500" : "text-gray-200"
             }`}
           >
-            {isCorrect ? "Правильно!" : "Собранное предложение:"}
+            {isCorrect ? "Tak jest!" : "Twoja wersja:"}
           </h2>
           <div className="flex flex-wrap gap-2 p-3 rounded-lg border border-gray-700 bg-gray-800/50">
             {selectedWords.map((word, index) => (
