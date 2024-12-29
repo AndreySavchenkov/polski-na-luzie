@@ -56,9 +56,9 @@ const TranslationExercise = ({ words, userId }: TranslationExerciseProps) => {
       }
     }
 
-    setTimeout(() => {
-      buttonsRef.current.forEach((button) => button?.blur());
+    buttonsRef.current.forEach((button) => button?.blur());
 
+    setTimeout(() => {
       if (currentWordIndex + 1 >= filteredWords.length) {
         handleFetchNewWords();
       } else {
