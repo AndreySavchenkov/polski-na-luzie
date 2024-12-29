@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { SentenceBuilder } from "../SentenceBuilder";
+import { SentenceBuilder } from "../SentenceBuilder/SentenceBuilder";
 import Image from "next/image";
 import { DialogT } from "@/types";
 

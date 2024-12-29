@@ -60,8 +60,8 @@ export default function DialogSetPage() {
 
   return (
     <div className="flex flex-col items-center justify-between  w-full min-h-[calc(100vh-56px)]">
-      <div className="flex flex-col items-center space-y-4 w-full">
-        <div className="flex gap-4 min-w-[350px] justify-between items-center mt-4">
+      <div className="flex flex-col items-center space-y-2 w-full">
+        <div className="flex gap-4 min-w-[350px] justify-between items-center mt-2">
           <button
             onClick={handlePrevious}
             className="flex items-center justify-center w-12 h-12 rounded-full bg-gray-800/50 backdrop-blur-sm hover:bg-gray-700 transition-colors"
