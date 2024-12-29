@@ -67,10 +67,8 @@ export default function WordPage({ params }: TopicPageProps) {
 
   if (isLoading) {
     return (
-      <div className="p-4">
-        <div className="flex items-center flex-col gap-4">
-          <TranslationExerciseSkeleton />
-        </div>
+      <div className="flex items-center flex-col gap-4">
+        <TranslationExerciseSkeleton />
       </div>
     );
   }
@@ -80,10 +78,8 @@ export default function WordPage({ params }: TopicPageProps) {
   }
 
   return (
-    <div className="p-4">
-      <div className="flex items-center flex-col gap-4">
-        <TranslationExercise words={words} userId={userId} />
-      </div>
+    <div className="flex items-center flex-col gap-4">
+      <TranslationExercise words={words} userId={userId} />
     </div>
   );
 }

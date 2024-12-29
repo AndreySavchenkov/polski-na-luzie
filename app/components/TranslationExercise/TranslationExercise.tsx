@@ -117,7 +117,7 @@ const TranslationExercise = ({ words, userId }: TranslationExerciseProps) => {
   }
 
   return (
-    <div className="flex flex-col items-center gap-8 w-full max-w-2xl mx-auto p-4">
+    <div className="flex flex-col items-center gap-8 w-full max-w-2xl mx-auto px-2 py-4">
       <Suspense fallback={<TranslationExerciseSkeleton />}>
         <WordDisplay
           word={currentWord}
