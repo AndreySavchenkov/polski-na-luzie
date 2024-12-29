@@ -1,11 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { DialogTopic } from "@/types";
+
 import { Card } from "../components/Card/Card";
+import { DialogSet } from "@/types";
 
 export default function DialogTopicsPage() {
-  const [topics, setTopics] = useState<DialogTopic[]>([]);
+  const [topics, setTopics] = useState<DialogSet[]>([]);
 
   useEffect(() => {
     const fetchTopics = async () => {
