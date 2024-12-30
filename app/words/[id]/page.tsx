@@ -2,8 +2,8 @@
 
 import TranslationExercise from "@/app/components/TranslationExercise/TranslationExercise";
 import { TranslationExerciseSkeleton } from "@/app/components/TranslationExercise/components/TranslationExerciseSkeleton";
-import { useUser } from "@/context/UserContext";
 import { Topic, Word } from "@/types";
+import { useSession } from "next-auth/react";
 import { useEffect, useState, use } from "react";
 
 interface TopicPageProps {
@@ -16,7 +16,9 @@ export default function WordPage({ params }: TopicPageProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const { userId } = useUser();
+  const { data: session } = useSession();
+  const userId = session?.user?.id;
+
   const { id } = use(params);
 
   useEffect(() => {
