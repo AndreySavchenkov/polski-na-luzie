@@ -64,24 +64,24 @@ export default function SignIn() {
             />
           </svg>
           <span className="font-medium">
-            {isLoading ? "Загрузка..." : "Войти через Google"}
+            {isLoading ? "Ładowanie..." : "Zaloguj się przez Google"}
           </span>
         </button>
 
         <p className="mt-4 text-sm text-center text-gray-400">
-          Используя Polski Na Luzie, вы соглашаетесь с нашими{" "}
+          Korzystając z Polski Na Luzie, zgadzasz się z naszymi{" "}
           <a
             href="/terms"
             className="text-indigo-400 hover:text-indigo-300 hover:underline"
           >
-            условиями использования
+            warunkami korzystania
           </a>{" "}
-          и{" "}
+          i{" "}
           <a
             href="/privacy"
             className="text-indigo-400 hover:text-indigo-300 hover:underline"
           >
-            политикой конфиденциальности
+            polityką prywatności
           </a>
           .
         </p>

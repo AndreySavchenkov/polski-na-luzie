@@ -14,12 +14,12 @@ export default function Header() {
   }
 
   return (
-    <div className="flex justify-between sticky top-0 z-50 bg-gray-800 text-white shadow-lg">
-      <Link href="/" className="px-6">
+    <div className="flex items-center justify-between sticky top-0 z-50 bg-gray-800 text-white shadow-lg">
+      <Link href="/" className="px-2">
         <Image src={logo} width={56} height={56} quality={100} alt="logo" />
       </Link>
 
-      <nav className="max-w-7xl flex items-center gap-4 py-4 px-6">
+      <nav className="max-w-7xl flex items-center gap-4 py-3 px-2">
         <Link className="hover:text-gray-400" href="/words">
           Słówka
         </Link>
@@ -39,17 +39,17 @@ export default function Header() {
             )}
             <button
               onClick={() => signOut({ callbackUrl: "/" })}
-              className="px-3 py-1 bg-red-600 rounded-md hover:bg-red-700"
+              className="px-3 py-1 bg-red-700 rounded-md hover:bg-red-800"
             >
-              Выйти
+              Wyloguj się
             </button>
           </div>
         ) : (
           <Link
             href="/auth/signin"
-            className="px-3 py-1 bg-indigo-600 rounded-md hover:bg-indigo-700"
+            className="px-3 py-1 bg-indigo-800 rounded-md hover:bg-indigo-900"
           >
-            Войти
+            Zaloguj się
           </Link>
         )}
       </nav>

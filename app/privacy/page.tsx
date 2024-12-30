@@ -1,27 +1,27 @@
 export default function PrivacyPolicy() {
   return (
     <div className="max-w-3xl mx-auto py-8 px-4">
-      <h1 className="text-2xl font-bold mb-6">Политика конфиденциальности</h1>
+      <h1 className="text-2xl font-bold mb-6">Polityka prywatności</h1>
       <div className="prose">
-        <p>Последнее обновление: {new Date().toLocaleDateString()}</p>
+        <p>Ostatnia aktualizacja: {new Date().toLocaleDateString()}</p>
 
-        <h2>1. Сбор информации</h2>
-        <p>Мы собираем следующую информацию:</p>
+        <h2>1. Gromadzenie informacji</h2>
+        <p>Gromadzimy następujące informacje:</p>
         <ul>
-          <li>Email адрес</li>
-          <li>Имя пользователя</li>
-          <li>Прогресс обучения</li>
+          <li>Adres email</li>
+          <li>Nazwa użytkownika</li>
+          <li>Postępy w nauce</li>
         </ul>
 
-        <h2>2. Использование информации</h2>
-        <p>Мы используем собранную информацию для:</p>
+        <h2>2. Wykorzystanie informacji</h2>
+        <p>Wykorzystujemy zebrane informacje do:</p>
         <ul>
-          <li>Предоставления образовательных услуг</li>
-          <li>Отслеживания прогресса обучения</li>
-          <li>Улучшения нашего сервиса</li>
+          <li>Świadczenia usług edukacyjnych</li>
+          <li>Śledzenia postępów w nauce</li>
+          <li>Ulepszania naszych usług</li>
         </ul>
 
-        {/* Добавьте остальные разделы политики */}
+        {/* Dodaj pozostałe sekcje polityki */}
       </div>
     </div>
   );
