@@ -1,18 +1,26 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Topic } from "@/types";
 import { Card } from "../components/Card/Card";
 import { CardsGridSkeleton } from "../components/Card/CardSkeleton";
+import { useSession } from "next-auth/react";
+
+interface TopicWithProgress {
+  id: string;
+  name: string;
+  totalWords: number;
+  learnedWords: number;
+}
 
 export default function WordsPage() {
-  const [topics, setTopics] = useState<Topic[]>([]);
+  const [topics, setTopics] = useState<TopicWithProgress[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { data: session } = useSession();
 
   useEffect(() => {
     const fetchTopics = async () => {
       try {
-        const response = await fetch("/api/topics/get-topics");
+        const response = await fetch("/api/topics/get-topics-with-progress");
         if (response.ok) {
           const data = await response.json();
           setTopics(data);
@@ -24,8 +32,10 @@ export default function WordsPage() {
       }
     };
 
-    fetchTopics();
-  }, []);
+    if (session?.user?.id) {
+      fetchTopics();
+    }
+  }, [session?.user?.id]);
 
   if (isLoading) {
     return (
@@ -41,7 +51,13 @@ export default function WordsPage() {
       <h1 className="text-2xl font-bold mb-4">Zestawy słów</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {topics.map((topic) => (
-          <Card key={topic.id} href={`/words/${topic.id}`} title={topic.name} />
+          <Card
+            key={topic.id}
+            href={`/words/${topic.id}`}
+            title={topic.name}
+            totalWords={topic.totalWords}
+            learnedWords={topic.learnedWords}
+          />
         ))}
       </div>
     </div>
