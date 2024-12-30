@@ -14,6 +14,7 @@ export default function SignIn() {
       await signIn("google", {
         callbackUrl: "/",
         redirect: false,
+        prompt: "select_account",
       });
     } catch (error) {
       console.error("Ошибка при входе:", error);
