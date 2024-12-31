@@ -11,11 +11,14 @@ export default function SignIn() {
   const handleSignIn = async () => {
     try {
       setIsLoading(true);
-      await signIn("google", {
+      const result = await signIn("google", {
         callbackUrl: "/",
         redirect: false,
         prompt: "select_account",
       });
+      if (result?.error) {
+        console.error("Ошибка входа:", result.error);
+      }
     } catch (error) {
       console.error("Ошибка при входе:", error);
     } finally {

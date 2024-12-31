@@ -14,8 +14,6 @@ export const authOptions: NextAuthOptions = {
           prompt: "select_account",
           access_type: "offline",
           response_type: "code",
-          hd: "*",
-          secure_browser: "true",
         },
       },
     }),
