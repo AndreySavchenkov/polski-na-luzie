@@ -1,9 +1,10 @@
 import Image from "next/image";
 import logoWithText from "@/public/logoWithText.png";
+import { Leaderboard } from "./components/Leaderboard/Leaderboard";
 
 export default function Home() {
   return (
-    <div className="flex flex-col justify-center items-center min-h-[calc(100vh-56px)] space-y-6">
+    <div className="flex flex-col items-center min-h-[calc(100vh-56px)] space-y-6 py-8">
       <div className="w-[250px] h-[250px] rounded-full border-2 border-gray-300 shadow-xl overflow-hidden">
         <Image
           src={logoWithText}
@@ -15,9 +16,7 @@ export default function Home() {
         />
       </div>
 
-      <p className="text-2xl text-center font-medium text-gray-700">
-        Słówka i wyrażenia, których naprawdę użyjesz.
-      </p>
+      <Leaderboard />
     </div>
   );
 }

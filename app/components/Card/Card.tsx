@@ -48,7 +48,7 @@ export const Card = ({
         </div>
         {totalWords !== undefined && (
           <div className="text-sm text-gray-400">
-            Opanowano: {learnedWords || 0} ze {totalWords} słów
+            Изучено: {learnedWords || 0} из {totalWords} слов
           </div>
         )}
       </div>

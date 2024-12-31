@@ -21,10 +21,10 @@ export default function Header() {
 
       <nav className="max-w-7xl flex items-center gap-4 py-3 px-2">
         <Link className="hover:text-gray-400" href="/words">
-          Słówka
+          Слова
         </Link>
         <Link className="hover:text-gray-400" href="/dialog-sets">
-          Dialogi
+          Диалоги
         </Link>
         {session ? (
           <div className="flex items-center gap-3">
@@ -41,7 +41,7 @@ export default function Header() {
               onClick={() => signOut({ callbackUrl: "/" })}
               className="px-3 py-1 bg-red-700 rounded-md hover:bg-red-800"
             >
-              Wyloguj się
+              Выйти
             </button>
           </div>
         ) : (
@@ -49,7 +49,7 @@ export default function Header() {
             href="/auth/signin"
             className="px-3 py-1 bg-indigo-800 rounded-md hover:bg-indigo-900"
           >
-            Zaloguj się
+            Войти
           </Link>
         )}
       </nav>
