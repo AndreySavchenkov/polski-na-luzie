@@ -25,7 +25,11 @@ export default function SignIn() {
     const isTelegram =
       userAgent.includes("telegram") ||
       typeof window.Telegram !== "undefined" ||
-      typeof window.TelegramWebviewProxy !== "undefined";
+      typeof window.TelegramWebviewProxy !== "undefined" ||
+      // Добавляем проверку для WebView
+      (userAgent.includes("chrome") &&
+        userAgent.includes("mobile") &&
+        userAgent.includes("wv"));
 
     // Определяем Instagram
     const isInstagram =
