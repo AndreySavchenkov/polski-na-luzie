@@ -157,7 +157,15 @@ export default function SignIn() {
     const params = new URLSearchParams(window.location.search);
     const shouldAutoLogin = params.get("autoLogin") === "true";
     const userAgent = window.navigator.userAgent.toLowerCase();
+
+    // Убираем проверку на mobile для Chrome
     const isChrome = userAgent.includes("chrome") && !userAgent.includes("wv");
+
+    console.log("Проверка автологина:", {
+      shouldAutoLogin,
+      isChrome,
+      userAgent,
+    });
 
     if (shouldAutoLogin && isChrome) {
       handleSignIn();
@@ -197,10 +205,14 @@ export default function SignIn() {
         <button
           onClick={() => {
             const userAgent = window.navigator.userAgent.toLowerCase();
+            // Убираем проверку на mobile для Chrome
             const isChrome =
-              userAgent.includes("chrome") &&
-              !userAgent.includes("wv") &&
-              userAgent.includes("mobile");
+              userAgent.includes("chrome") && !userAgent.includes("wv");
+
+            console.log("Клик по кнопке входа:", {
+              isChrome,
+              userAgent,
+            });
 
             // Всегда пытаемся открыть в Chrome
             if (!isChrome) {
