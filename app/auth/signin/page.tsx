@@ -197,7 +197,22 @@ export default function SignIn() {
         </h1>
 
         <button
-          onClick={handleSignIn}
+          onClick={() => {
+            const userAgent = window.navigator.userAgent.toLowerCase();
+            const isAndroid = userAgent.includes("android");
+            const isIOS = /iphone|ipad|ipod/.test(userAgent);
+            const isChromeOrSafari =
+              (isAndroid &&
+                userAgent.includes("chrome") &&
+                !userAgent.includes("wv")) ||
+              (isIOS && userAgent.includes("safari"));
+
+            if (!isChromeOrSafari) {
+              openInBrowser();
+            } else {
+              handleSignIn();
+            }
+          }}
           disabled={isLoading}
           className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed group"
         >
