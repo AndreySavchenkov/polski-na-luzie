@@ -4,6 +4,7 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import { db } from "@/lib/db";
 
 export const authOptions: NextAuthOptions = {
+  debug: process.env.NODE_ENV === "development",
   adapter: PrismaAdapter(db),
   providers: [
     GoogleProvider({
@@ -30,6 +31,16 @@ export const authOptions: NextAuthOptions = {
         session.user.id = token.id as string;
       }
       return session;
+    },
+    async signIn({ user, account, profile, email, credentials }) {
+      console.log("Попытка входа:", {
+        user,
+        account,
+        profile,
+        email,
+        credentials,
+      });
+      return true;
     },
   },
   pages: {

@@ -16,11 +16,19 @@ export default function SignIn() {
         redirect: false,
         prompt: "select_account",
       });
+
       if (result?.error) {
-        console.error("Ошибка входа:", result.error);
+        console.error("Детали ошибки входа:", {
+          error: result.error,
+          status: result.status,
+          ok: result.ok,
+          url: result.url,
+        });
+      } else {
+        console.log("Успешный вход:", result);
       }
     } catch (error) {
-      console.error("Ошибка при входе:", error);
+      console.error("Полная ошибка при входе:", error);
     } finally {
       setIsLoading(false);
     }
