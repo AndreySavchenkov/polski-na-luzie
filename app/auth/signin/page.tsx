@@ -90,17 +90,22 @@ export default function SignIn() {
 
     try {
       if (isAndroid) {
-        console.log("Открытие в Chrome (Android)");
-        window.location.href = `intent://${window.location.host}${window.location.pathname}#Intent;scheme=https;package=com.android.chrome;end`;
+        // Принудительно открываем в Chrome для Android
+        const chromeUrl = `googlechrome://navigate?url=${encodeURIComponent(
+          url
+        )}`;
+        window.location.href = chromeUrl;
+
+        // Fallback на intent схему через 100мс если Chrome не открылся
+        setTimeout(() => {
+          window.location.href = `intent://${window.location.host}${window.location.pathname}#Intent;scheme=https;package=com.android.chrome;end`;
+        }, 100);
       } else if (isIOS) {
-        console.log("Открытие в Chrome (iOS)");
         window.location.href = `googlechrome://${window.location.host}${window.location.pathname}`;
         setTimeout(() => {
-          console.log("Fallback на Safari (iOS)");
           window.location.href = url;
         }, 2500);
       } else {
-        console.log("Открытие в системном браузере");
         window.open(url, "_system");
       }
     } catch (error) {
@@ -115,17 +120,14 @@ export default function SignIn() {
 
   const getBrowserMessage = () => {
     const userAgent = window.navigator.userAgent.toLowerCase();
-    const isTelegram =
-      userAgent.includes("telegram") ||
-      window.navigator.userAgent.includes("TelegramWebApp") ||
-      window.Telegram !== undefined;
-
-    if (isTelegram) {
-      return "Для входа через Google аккаунт необходимо открыть эту страницу в браузере Chrome. Нажмите на три точки ⋮ в правом верхнем углу и выберите 'Открыть в Chrome'";
-    }
-
     const isAndroid = userAgent.includes("android");
     const isIOS = /iphone|ipad|ipod/.test(userAgent);
+    const isTelegram = userAgent.includes("telegram");
+
+    if (isTelegram && isAndroid) {
+      return "Для входа через Google аккаунт необходимо открыть эту страницу в Chrome. Нажмите кнопку ниже для открытия в Chrome.";
+    }
+
     const isInstagram = userAgent.includes("instagram");
 
     let message =
