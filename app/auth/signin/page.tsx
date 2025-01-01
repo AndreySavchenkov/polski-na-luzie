@@ -25,11 +25,23 @@ export default function SignIn() {
       userAgent.includes("telegram") ||
       userAgent.includes("tgweb") ||
       window.location.href.includes("tg://") ||
-      typeof window.TelegramWebviewProxy !== "undefined"
+      typeof window.TelegramWebviewProxy !== "undefined" ||
+      // Добавляем проверку для Chrome в Telegram
+      (userAgent.includes("chrome") &&
+        userAgent.includes("mobile") &&
+        !userAgent.includes("okhttp"))
     );
   };
 
   useEffect(() => {
+    const userAgent = window.navigator.userAgent.toLowerCase();
+    console.log("Проверка браузера:", {
+      userAgent,
+      isTelegram: isTelegramBrowser(),
+      hasChrome: userAgent.includes("chrome"),
+      isMobile: userAgent.includes("mobile"),
+    });
+
     if (isTelegramBrowser()) {
       setIsInAppBrowser(true);
     }
