@@ -199,15 +199,13 @@ export default function SignIn() {
         <button
           onClick={() => {
             const userAgent = window.navigator.userAgent.toLowerCase();
-            const isAndroid = userAgent.includes("android");
-            const isIOS = /iphone|ipad|ipod/.test(userAgent);
-            const isChromeOrSafari =
-              (isAndroid &&
-                userAgent.includes("chrome") &&
-                !userAgent.includes("wv")) ||
-              (isIOS && userAgent.includes("safari"));
+            const isChrome =
+              userAgent.includes("chrome") &&
+              !userAgent.includes("wv") &&
+              userAgent.includes("mobile");
 
-            if (!isChromeOrSafari) {
+            // Всегда пытаемся открыть в Chrome
+            if (!isChrome) {
               openInBrowser();
             } else {
               handleSignIn();
