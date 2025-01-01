@@ -24,7 +24,7 @@ export default function Header() {
           Слова
         </Link>
         <Link className="hover:text-gray-400" href="/dialog-sets">
-          Диалоги
+          Фразы
         </Link>
         {session ? (
           <div className="flex items-center gap-3">

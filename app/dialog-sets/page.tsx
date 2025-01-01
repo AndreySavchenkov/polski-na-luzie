@@ -30,7 +30,7 @@ export default function DialogSetsPage() {
   if (isLoading) {
     return (
       <div className="p-4">
-        <h1 className="text-2xl font-bold mb-4">Zestawy dialogów</h1>
+        <h1 className="text-2xl font-bold mb-4">Наборы фраз</h1>
         <CardsGridSkeleton />
       </div>
     );
