@@ -103,41 +103,27 @@ export default function SignIn() {
     const isAndroid = userAgent.includes("android");
     const isIOS = /iphone|ipad|ipod/.test(userAgent);
 
-    console.log("Попытка открытия в браузере:", {
-      url,
-      userAgent,
-      isAndroid,
-      isIOS,
-      isInAppBrowser,
-    });
-
     try {
       if (isAndroid) {
-        // Принудительно открываем в Chrome для Android
+        // Добавляем параметр для автоматического входа
+        const loginUrl = `${url}?autoLogin=true`;
         const chromeUrl = `googlechrome://navigate?url=${encodeURIComponent(
-          url
+          loginUrl
         )}`;
         window.location.href = chromeUrl;
 
-        // Fallback на intent схему через 100мс если Chrome не открылся
         setTimeout(() => {
-          window.location.href = `intent://${window.location.host}${window.location.pathname}#Intent;scheme=https;package=com.android.chrome;end`;
+          window.location.href = `intent://${window.location.host}${window.location.pathname}?autoLogin=true#Intent;scheme=https;package=com.android.chrome;end`;
         }, 100);
       } else if (isIOS) {
-        window.location.href = `googlechrome://${window.location.host}${window.location.pathname}`;
+        const loginUrl = `${url}?autoLogin=true`;
+        window.location.href = `googlechrome://${window.location.host}${window.location.pathname}?autoLogin=true`;
         setTimeout(() => {
-          window.location.href = url;
+          window.location.href = loginUrl;
         }, 2500);
-      } else {
-        window.open(url, "_system");
       }
     } catch (error) {
-      console.error("Ошибка при открытии в браузере:", {
-        error,
-        userAgent,
-        isAndroid,
-        isIOS,
-      });
+      console.error("Ошибка при открытии в браузере:", error);
     }
   };
 
@@ -165,6 +151,18 @@ export default function SignIn() {
       ? "Для входа через Google аккаунт необходимо открыть эту страницу в Chrome."
       : "Для входа через Google аккаунт необходимо открыть эту страницу в браузере.";
   };
+
+  // Добавляем useEffect для проверки autoLogin
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const shouldAutoLogin = params.get("autoLogin") === "true";
+    const userAgent = window.navigator.userAgent.toLowerCase();
+    const isChrome = userAgent.includes("chrome") && !userAgent.includes("wv");
+
+    if (shouldAutoLogin && isChrome) {
+      handleSignIn();
+    }
+  }, []);
 
   return (
     <div className="flex flex-col justify-center items-center min-h-[calc(100vh-56px)] space-y-8 p-4">
