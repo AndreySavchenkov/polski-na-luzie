@@ -6,6 +6,8 @@ declare global {
     TelegramWebviewProxy?: any;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     Telegram?: any;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    chrome?: any;
   }
 }
 
@@ -103,57 +105,41 @@ export default function SignIn() {
     const isAndroid = userAgent.includes("android");
     const isIOS = /iphone|ipad|ipod/.test(userAgent);
 
-    console.log("Открытие в браузере:", { isAndroid, isIOS, url });
+    console.log("Открытие в Chrome:", { isAndroid, isIOS, url });
 
     try {
       if (isAndroid) {
-        // Сначала пробуем открыть напрямую в Chrome
         window.location.href = `googlechrome://navigate?url=${encodeURIComponent(
           url
         )}`;
 
-        // Через 100мс пробуем intent схему
         setTimeout(() => {
-          const intentUrl = `intent://${window.location.host}${window.location.pathname}#Intent;scheme=https;package=com.android.chrome;end`;
-          window.location.href = intentUrl;
+          window.location.href = `intent://${window.location.host}${window.location.pathname}#Intent;scheme=https;package=com.android.chrome;end`;
         }, 100);
       } else if (isIOS) {
-        // Для iOS сначала пробуем открыть в Chrome
         window.location.href = `googlechrome://${window.location.host}${window.location.pathname}`;
-
-        // Через 2.5 секунды открываем в Safari как запасной вариант
-        setTimeout(() => {
-          window.location.href = url;
-        }, 2500);
+      } else {
+        window.location.href = "https://www.google.com/chrome/";
       }
     } catch (error) {
-      console.error("Ошибка при открытии в браузере:", error);
+      console.error("Ошибка при открытии в Chrome:", error);
+      handleSignIn(); // Fallback к обычному входу при ошибке
     }
   };
 
   const getBrowserMessage = () => {
     const userAgent = window.navigator.userAgent.toLowerCase();
-    const isAndroid = userAgent.includes("android");
-    const isIOS = /iphone|ipad|ipod/.test(userAgent);
-    const isTelegram =
-      userAgent.includes("telegram") || typeof window.Telegram !== "undefined";
-    const isInstagram = userAgent.includes("instagram");
+    const isRealChrome =
+      userAgent.includes("chrome") &&
+      !userAgent.includes("wv") &&
+      !userAgent.includes("instagram") &&
+      !userAgent.includes("telegram");
 
-    if (isTelegram) {
-      return isAndroid
-        ? "Для входа через Google аккаунт необходимо открыть эту страницу в Chrome. Нажмите кнопку ниже."
-        : "Для входа через Google аккаунт необходимо открыть эту страницу в браузере. Нажмите кнопку ниже.";
+    if (isRealChrome) {
+      return null;
     }
 
-    if (isInstagram) {
-      return isIOS
-        ? "Для входа через Google аккаунт необходимо открыть эту страницу в Safari. Нажмите кнопку ниже."
-        : "Для входа через Google аккаунт необходимо открыть эту страницу в Chrome. Нажмите кнопку ниже.";
-    }
-
-    return isAndroid
-      ? "Для входа через Google аккаунт необходимо открыть эту страницу в Chrome."
-      : "Для входа через Google аккаунт необходимо открыть эту страницу в браузере.";
+    return "Для лучшей работы рекомендуется использовать Chrome. Нажмите кнопку ниже для входа через Chrome или продолжите в текущем браузере.";
   };
 
   // Добавляем useEffect для проверки autoLogin
@@ -175,6 +161,43 @@ export default function SignIn() {
       handleSignIn();
     }
   }, []);
+
+  const checkChromeAvailable = async () => {
+    try {
+      const userAgent = window.navigator.userAgent.toLowerCase();
+      const isAndroid = userAgent.includes("android");
+      const isIOS = /iphone|ipad|ipod/.test(userAgent);
+
+      if (isAndroid) {
+        // Проверяем через intent схему
+        const intentUrl = `intent://${window.location.host}#Intent;scheme=https;package=com.android.chrome;end`;
+        window.location.href = intentUrl;
+
+        return new Promise((resolve) => {
+          setTimeout(() => {
+            resolve(false);
+          }, 500);
+        });
+      }
+
+      if (isIOS) {
+        // Проверяем через chrome схему
+        const chromeUrl = `googlechrome://${window.location.host}`;
+        window.location.href = chromeUrl;
+
+        return new Promise((resolve) => {
+          setTimeout(() => {
+            resolve(false);
+          }, 500);
+        });
+      }
+
+      // Для десктопа проверяем наличие объекта chrome
+      return !!window.chrome;
+    } catch {
+      return false;
+    }
+  };
 
   return (
     <div className="flex flex-col justify-center items-center min-h-[calc(100vh-56px)] space-y-8 p-4">
@@ -207,33 +230,29 @@ export default function SignIn() {
         </h1>
 
         <button
-          onClick={() => {
+          onClick={async () => {
             const userAgent = window.navigator.userAgent.toLowerCase();
-            const isAndroid = userAgent.includes("android");
-            const isIOS = /iphone|ipad|ipod/.test(userAgent);
-
-            // Проверяем, что это действительно Chrome или Safari
             const isRealChrome =
               userAgent.includes("chrome") &&
               !userAgent.includes("wv") &&
               !userAgent.includes("instagram") &&
-              !userAgent.includes("telegram");
+              !userAgent.includes("telegram") &&
+              !!window.chrome;
 
-            const isSafari =
-              isIOS &&
-              userAgent.includes("safari") &&
-              !userAgent.includes("chrome");
+            console.log("Проверка браузера:", { isRealChrome, userAgent });
 
-            console.log("Клик по кнопке входа:", {
-              isRealChrome,
-              isSafari,
-              userAgent,
-            });
-
-            if (isRealChrome || (isIOS && isSafari)) {
+            if (isRealChrome) {
               handleSignIn();
-            } else {
+              return;
+            }
+
+            const isChromeAvailable = await checkChromeAvailable();
+            console.log("Проверка наличия Chrome:", { isChromeAvailable });
+
+            if (isChromeAvailable) {
               openInBrowser();
+            } else {
+              handleSignIn();
             }
           }}
           disabled={isLoading}
