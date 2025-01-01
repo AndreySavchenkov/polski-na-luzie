@@ -15,8 +15,19 @@ export default function SignIn() {
     const isInstagram = userAgent.includes("instagram");
     const isWhatsapp = userAgent.includes("whatsapp");
     const isFacebook = userAgent.includes("fbav") || userAgent.includes("fban");
+    const isVK = userAgent.includes("vkapp");
+    const isLine = userAgent.includes("line");
+    const isViber = userAgent.includes("viber");
 
-    setIsInAppBrowser(isTelegram || isInstagram || isWhatsapp || isFacebook);
+    setIsInAppBrowser(
+      isTelegram ||
+        isInstagram ||
+        isWhatsapp ||
+        isFacebook ||
+        isVK ||
+        isLine ||
+        isViber
+    );
   }, []);
 
   const handleSignIn = async () => {
@@ -51,18 +62,22 @@ export default function SignIn() {
     const isIOS = /iphone|ipad|ipod/.test(userAgent);
 
     if (isAndroid) {
-      // Открываем в Chrome на Android
+      // Пробуем открыть в Chrome
       window.location.href = `intent://${window.location.host}${window.location.pathname}#Intent;scheme=https;package=com.android.chrome;end`;
+
+      // Если Chrome не установлен, открываем в Samsung Internet или другом браузере
+      setTimeout(() => {
+        window.location.href = `https://${window.location.host}${window.location.pathname}`;
+      }, 2500);
     } else if (isIOS) {
-      // Пытаемся открыть в Chrome на iOS
+      // Пробуем открыть в Chrome
       window.location.href = `googlechrome://${window.location.host}${window.location.pathname}`;
 
-      // Если Chrome не установлен, открываем в Safari через небольшую задержку
+      // Если Chrome не установлен, открываем в Safari
       setTimeout(() => {
-        window.location.href = url;
-      }, 2000);
+        window.location.href = `https://${window.location.host}${window.location.pathname}`;
+      }, 2500);
     } else {
-      // Для остальных платформ
       window.open(url, "_system");
     }
   };
@@ -71,13 +86,25 @@ export default function SignIn() {
     const userAgent = window.navigator.userAgent.toLowerCase();
     const isAndroid = userAgent.includes("android");
     const isIOS = /iphone|ipad|ipod/.test(userAgent);
+    const isTelegram = userAgent.includes("telegram");
+
+    let message =
+      "Для входа через Google аккаунт, пожалуйста, откройте эту страницу в браузере";
 
     if (isAndroid) {
-      return "Для корректной работы с Google аккаунтом, пожалуйста, откройте эту страницу в Chrome";
+      message =
+        "Для входа через Google аккаунт, пожалуйста, откройте эту страницу в Chrome";
     } else if (isIOS) {
-      return "Для корректной работы с Google аккаунтом, пожалуйста, откройте эту страницу в Safari или Chrome";
+      message =
+        "Для входа через Google аккаунт, пожалуйста, откройте эту страницу в Safari или Chrome";
     }
-    return "Для корректной работы с Google аккаунтом, пожалуйста, откройте эту страницу в браузере Chrome";
+
+    if (isTelegram) {
+      message +=
+        " (нажмите на три точки в правом верхнем углу и выберите 'Открыть в браузере')";
+    }
+
+    return message;
   };
 
   return (
