@@ -46,17 +46,45 @@ export default function SignIn() {
 
   const openInBrowser = () => {
     const url = window.location.href;
-    window.open(url, "_system");
+    const userAgent = window.navigator.userAgent.toLowerCase();
+    const isAndroid = userAgent.includes("android");
+    const isIOS = /iphone|ipad|ipod/.test(userAgent);
+
+    if (isAndroid) {
+      // Открываем в Chrome на Android
+      window.location.href = `intent://${window.location.host}${window.location.pathname}#Intent;scheme=https;package=com.android.chrome;end`;
+    } else if (isIOS) {
+      // Пытаемся открыть в Chrome на iOS
+      window.location.href = `googlechrome://${window.location.host}${window.location.pathname}`;
+
+      // Если Chrome не установлен, открываем в Safari через небольшую задержку
+      setTimeout(() => {
+        window.location.href = url;
+      }, 2000);
+    } else {
+      // Для остальных платформ
+      window.open(url, "_system");
+    }
+  };
+
+  const getBrowserMessage = () => {
+    const userAgent = window.navigator.userAgent.toLowerCase();
+    const isAndroid = userAgent.includes("android");
+    const isIOS = /iphone|ipad|ipod/.test(userAgent);
+
+    if (isAndroid) {
+      return "Для корректной работы с Google аккаунтом, пожалуйста, откройте эту страницу в Chrome";
+    } else if (isIOS) {
+      return "Для корректной работы с Google аккаунтом, пожалуйста, откройте эту страницу в Safari или Chrome";
+    }
+    return "Для корректной работы с Google аккаунтом, пожалуйста, откройте эту страницу в браузере Chrome";
   };
 
   return (
     <div className="flex flex-col justify-center items-center min-h-[calc(100vh-56px)] space-y-8 p-4">
       {isInAppBrowser && (
         <div className="max-w-sm w-full bg-yellow-500/10 backdrop-blur-sm rounded-xl p-4 border border-yellow-500/50 text-yellow-200 mb-4">
-          <p className="text-center">
-            Для корректной работы с Google аккаунтом, пожалуйста, откройте эту
-            страницу в браузере Chrome
-          </p>
+          <p className="text-center">{getBrowserMessage()}</p>
           <button
             onClick={openInBrowser}
             className="w-full mt-2 text-center underline cursor-pointer hover:text-yellow-400"
