@@ -1,12 +1,23 @@
 "use client";
 
 import { signIn } from "next-auth/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import logoWithText from "@/public/logoWithText.png";
 
 export default function SignIn() {
   const [isLoading, setIsLoading] = useState(false);
+  const [isInAppBrowser, setIsInAppBrowser] = useState(false);
+
+  useEffect(() => {
+    const userAgent = window.navigator.userAgent.toLowerCase();
+    const isTelegram = userAgent.includes("telegram");
+    const isInstagram = userAgent.includes("instagram");
+    const isWhatsapp = userAgent.includes("whatsapp");
+    const isFacebook = userAgent.includes("fbav") || userAgent.includes("fban");
+
+    setIsInAppBrowser(isTelegram || isInstagram || isWhatsapp || isFacebook);
+  }, []);
 
   const handleSignIn = async () => {
     try {
@@ -33,8 +44,28 @@ export default function SignIn() {
     }
   };
 
+  const openInBrowser = () => {
+    const url = window.location.href;
+    window.open(url, "_system");
+  };
+
   return (
     <div className="flex flex-col justify-center items-center min-h-[calc(100vh-56px)] space-y-8 p-4">
+      {isInAppBrowser && (
+        <div className="max-w-sm w-full bg-yellow-500/10 backdrop-blur-sm rounded-xl p-4 border border-yellow-500/50 text-yellow-200 mb-4">
+          <p className="text-center">
+            Для корректной работы с Google аккаунтом, пожалуйста, откройте эту
+            страницу в браузере Chrome
+          </p>
+          <button
+            onClick={openInBrowser}
+            className="w-full mt-2 text-center underline cursor-pointer hover:text-yellow-400"
+          >
+            Открыть в браузере
+          </button>
+        </div>
+      )}
+
       <div className="w-[200px] h-[200px] rounded-full border-2 border-gray-700 shadow-xl overflow-hidden bg-gray-800/30 backdrop-blur-sm">
         <Image
           src={logoWithText}
