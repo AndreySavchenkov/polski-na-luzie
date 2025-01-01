@@ -18,33 +18,40 @@ export default function SignIn() {
   const [isLoading, setIsLoading] = useState(false);
   const [isInAppBrowser, setIsInAppBrowser] = useState(false);
 
-  // Единая функция определения Telegram браузера
-  const isTelegramBrowser = () => {
+  const isInAppBrowserCheck = () => {
     const userAgent = window.navigator.userAgent.toLowerCase();
-    return (
+
+    // Определяем Telegram
+    const isTelegram =
       userAgent.includes("telegram") ||
-      userAgent.includes("tgweb") ||
-      window.location.href.includes("tg://") ||
-      typeof window.TelegramWebviewProxy !== "undefined" ||
-      // Добавляем проверку для Chrome в Telegram
-      (userAgent.includes("chrome") &&
-        userAgent.includes("mobile") &&
-        !userAgent.includes("okhttp"))
-    );
+      typeof window.Telegram !== "undefined" ||
+      typeof window.TelegramWebviewProxy !== "undefined";
+
+    // Определяем Instagram
+    const isInstagram =
+      userAgent.includes("instagram") ||
+      (userAgent.includes("mozilla") &&
+        userAgent.includes("iphone") &&
+        !userAgent.includes("safari"));
+
+    // Определяем другие in-app браузеры
+    const isInAppBrowser =
+      isTelegram ||
+      isInstagram ||
+      userAgent.includes("fb_iab") ||
+      userAgent.includes("line") ||
+      userAgent.includes("wv");
+
+    return isInAppBrowser;
   };
 
   useEffect(() => {
-    const userAgent = window.navigator.userAgent.toLowerCase();
+    const isInApp = isInAppBrowserCheck();
     console.log("Проверка браузера:", {
-      userAgent,
-      isTelegram: isTelegramBrowser(),
-      hasChrome: userAgent.includes("chrome"),
-      isMobile: userAgent.includes("mobile"),
+      userAgent: window.navigator.userAgent,
+      isInAppBrowser: isInApp,
     });
-
-    if (isTelegramBrowser()) {
-      setIsInAppBrowser(true);
-    }
+    setIsInAppBrowser(isInApp);
   }, []);
 
   const handleSignIn = async () => {
@@ -134,31 +141,25 @@ export default function SignIn() {
     const userAgent = window.navigator.userAgent.toLowerCase();
     const isAndroid = userAgent.includes("android");
     const isIOS = /iphone|ipad|ipod/.test(userAgent);
-    const isTelegram = userAgent.includes("telegram");
-
-    if (isTelegram && isAndroid) {
-      return "Для входа через Google аккаунт необходимо открыть эту страницу в Chrome. Нажмите кнопку ниже для открытия в Chrome.";
-    }
-
+    const isTelegram =
+      userAgent.includes("telegram") || typeof window.Telegram !== "undefined";
     const isInstagram = userAgent.includes("instagram");
 
-    let message =
-      "Для входа через Google аккаунт, пожалуйста, откройте эту страницу в браузере";
-
-    if (isAndroid) {
-      message =
-        "Для входа через Google аккаунт, пожалуйста, откройте эту страницу в Chrome";
-    } else if (isIOS) {
-      message =
-        "Для входа через Google аккаунт, пожалуйста, откройте эту страницу в Safari или Chrome";
+    if (isTelegram) {
+      return isAndroid
+        ? "Для входа через Google аккаунт необходимо открыть эту страницу в Chrome. Нажмите кнопку ниже."
+        : "Для входа через Google аккаунт необходимо открыть эту страницу в браузере. Нажмите кнопку ниже.";
     }
 
     if (isInstagram) {
-      message +=
-        " (нажмите на три точки в правом верхнем углу и выберите 'Открыть в браузере')";
+      return isIOS
+        ? "Для входа через Google аккаунт необходимо открыть эту страницу в Safari. Нажмите кнопку ниже."
+        : "Для входа через Google аккаунт необходимо открыть эту страницу в Chrome. Нажмите кнопку ниже.";
     }
 
-    return message;
+    return isAndroid
+      ? "Для входа через Google аккаунт необходимо открыть эту страницу в Chrome."
+      : "Для входа через Google аккаунт необходимо открыть эту страницу в браузере.";
   };
 
   return (
