@@ -13,8 +13,7 @@ export default function SignIn() {
       setIsLoading(true);
       const result = await signIn("google", {
         callbackUrl: "/",
-        redirect: false,
-        prompt: "select_account",
+        redirect: true,
       });
 
       if (result?.error) {

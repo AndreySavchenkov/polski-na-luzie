@@ -15,6 +15,8 @@ export const authOptions: NextAuthOptions = {
           access_type: "offline",
           response_type: "code",
           include_granted_scopes: true,
+          prompt: "none",
+          login_hint: "",
           scope: [
             "https://www.googleapis.com/auth/userinfo.profile",
             "https://www.googleapis.com/auth/userinfo.email",
