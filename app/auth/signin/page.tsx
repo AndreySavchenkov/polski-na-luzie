@@ -103,23 +103,27 @@ export default function SignIn() {
     const isAndroid = userAgent.includes("android");
     const isIOS = /iphone|ipad|ipod/.test(userAgent);
 
+    console.log("Открытие в браузере:", { isAndroid, isIOS, url });
+
     try {
       if (isAndroid) {
-        // Добавляем параметр для автоматического входа
-        const loginUrl = `${url}?autoLogin=true`;
-        const chromeUrl = `googlechrome://navigate?url=${encodeURIComponent(
-          loginUrl
+        // Сначала пробуем открыть напрямую в Chrome
+        window.location.href = `googlechrome://navigate?url=${encodeURIComponent(
+          url
         )}`;
-        window.location.href = chromeUrl;
 
+        // Через 100мс пробуем intent схему
         setTimeout(() => {
-          window.location.href = `intent://${window.location.host}${window.location.pathname}?autoLogin=true#Intent;scheme=https;package=com.android.chrome;end`;
+          const intentUrl = `intent://${window.location.host}${window.location.pathname}#Intent;scheme=https;package=com.android.chrome;end`;
+          window.location.href = intentUrl;
         }, 100);
       } else if (isIOS) {
-        const loginUrl = `${url}?autoLogin=true`;
-        window.location.href = `googlechrome://${window.location.host}${window.location.pathname}?autoLogin=true`;
+        // Для iOS сначала пробуем открыть в Chrome
+        window.location.href = `googlechrome://${window.location.host}${window.location.pathname}`;
+
+        // Через 2.5 секунды открываем в Safari как запасной вариант
         setTimeout(() => {
-          window.location.href = loginUrl;
+          window.location.href = url;
         }, 2500);
       }
     } catch (error) {
@@ -205,20 +209,31 @@ export default function SignIn() {
         <button
           onClick={() => {
             const userAgent = window.navigator.userAgent.toLowerCase();
-            // Убираем проверку на mobile для Chrome
-            const isChrome =
-              userAgent.includes("chrome") && !userAgent.includes("wv");
+            const isAndroid = userAgent.includes("android");
+            const isIOS = /iphone|ipad|ipod/.test(userAgent);
+
+            // Проверяем, что это действительно Chrome или Safari
+            const isRealChrome =
+              userAgent.includes("chrome") &&
+              !userAgent.includes("wv") &&
+              !userAgent.includes("instagram") &&
+              !userAgent.includes("telegram");
+
+            const isSafari =
+              isIOS &&
+              userAgent.includes("safari") &&
+              !userAgent.includes("chrome");
 
             console.log("Клик по кнопке входа:", {
-              isChrome,
+              isRealChrome,
+              isSafari,
               userAgent,
             });
 
-            // Всегда пытаемся открыть в Chrome
-            if (!isChrome) {
-              openInBrowser();
-            } else {
+            if (isRealChrome || (isIOS && isSafari)) {
               handleSignIn();
+            } else {
+              openInBrowser();
             }
           }}
           disabled={isLoading}
