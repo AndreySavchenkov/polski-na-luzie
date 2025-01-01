@@ -1,5 +1,15 @@
 "use client";
 
+declare global {
+  interface Window {
+    Telegram?: {
+      WebApp?: {
+        openTelegramLink: (url: string) => void;
+      };
+    };
+  }
+}
+
 import { signIn } from "next-auth/react";
 import { useState, useEffect } from "react";
 import Image from "next/image";
@@ -11,7 +21,10 @@ export default function SignIn() {
 
   useEffect(() => {
     const userAgent = window.navigator.userAgent.toLowerCase();
-    const isTelegram = userAgent.includes("telegram");
+    const isTelegram =
+      userAgent.includes("telegram") ||
+      window.navigator.userAgent.includes("TelegramWebApp") ||
+      window.Telegram !== undefined;
     const isInstagram = userAgent.includes("instagram");
     const isWhatsapp = userAgent.includes("whatsapp");
     const isFacebook = userAgent.includes("fbav") || userAgent.includes("fban");
@@ -19,15 +32,26 @@ export default function SignIn() {
     const isLine = userAgent.includes("line");
     const isViber = userAgent.includes("viber");
 
-    setIsInAppBrowser(
+    const isInApp =
       isTelegram ||
-        isInstagram ||
-        isWhatsapp ||
-        isFacebook ||
-        isVK ||
-        isLine ||
-        isViber
-    );
+      isInstagram ||
+      isWhatsapp ||
+      isFacebook ||
+      isVK ||
+      isLine ||
+      isViber;
+
+    setIsInAppBrowser(isInApp);
+
+    // Автоматическое перенаправление для Telegram
+    if (isTelegram) {
+      const url = window.location.href;
+      if (window.Telegram?.WebApp?.openTelegramLink) {
+        window.Telegram.WebApp.openTelegramLink(url);
+      } else {
+        window.location.href = `https://telegram.org/dl`;
+      }
+    }
   }, []);
 
   const handleSignIn = async () => {
@@ -39,17 +63,11 @@ export default function SignIn() {
       });
 
       if (result?.error) {
-        console.error("Детали ошибки входа:", {
-          error: result.error,
-          status: result.status,
-          ok: result.ok,
-          url: result.url,
-        });
-      } else {
-        console.log("Успешный вход:", result);
+        console.error("Ошибка входа:", result.error);
+        // Показать пользователю сообщение об ошибке
       }
     } catch (error) {
-      console.error("Полная ошибка при входе:", error);
+      console.error("Ошибка при входе:", error);
     } finally {
       setIsLoading(false);
     }
@@ -60,6 +78,23 @@ export default function SignIn() {
     const userAgent = window.navigator.userAgent.toLowerCase();
     const isAndroid = userAgent.includes("android");
     const isIOS = /iphone|ipad|ipod/.test(userAgent);
+    const isTelegram =
+      userAgent.includes("telegram") ||
+      window.navigator.userAgent.includes("TelegramWebApp") ||
+      window.Telegram !== undefined;
+
+    if (isTelegram) {
+      // Специальная обработка для Telegram
+      if (window.Telegram?.WebApp?.openTelegramLink) {
+        window.Telegram.WebApp.openTelegramLink(url);
+      } else {
+        // Fallback для старых версий
+        window.location.href = `tg://resolve?domain=share&url=${encodeURIComponent(
+          url
+        )}`;
+      }
+      return;
+    }
 
     if (isAndroid) {
       // Пробуем открыть в Chrome
@@ -84,9 +119,18 @@ export default function SignIn() {
 
   const getBrowserMessage = () => {
     const userAgent = window.navigator.userAgent.toLowerCase();
+    const isTelegram =
+      userAgent.includes("telegram") ||
+      window.navigator.userAgent.includes("TelegramWebApp") ||
+      window.Telegram !== undefined;
+
+    if (isTelegram) {
+      return "Для входа через Google аккаунт необходимо открыть эту страницу в браузере Chrome. Нажмите на три точки ⋮ в правом верхнем углу и выберите 'Открыть в Chrome'";
+    }
+
     const isAndroid = userAgent.includes("android");
     const isIOS = /iphone|ipad|ipod/.test(userAgent);
-    const isTelegram = userAgent.includes("telegram");
+    const isInstagram = userAgent.includes("instagram");
 
     let message =
       "Для входа через Google аккаунт, пожалуйста, откройте эту страницу в браузере";
@@ -99,7 +143,7 @@ export default function SignIn() {
         "Для входа через Google аккаунт, пожалуйста, откройте эту страницу в Safari или Chrome";
     }
 
-    if (isTelegram) {
+    if (isInstagram) {
       message +=
         " (нажмите на три точки в правом верхнем углу и выберите 'Открыть в браузере')";
     }
