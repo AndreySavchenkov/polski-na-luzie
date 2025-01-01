@@ -2,11 +2,10 @@
 
 declare global {
   interface Window {
-    Telegram?: {
-      WebApp?: {
-        openTelegramLink: (url: string) => void;
-      };
-    };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    TelegramWebviewProxy?: any;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    Telegram?: any;
   }
 }
 
@@ -19,43 +18,29 @@ export default function SignIn() {
   const [isLoading, setIsLoading] = useState(false);
   const [isInAppBrowser, setIsInAppBrowser] = useState(false);
 
-  useEffect(() => {
+  // Единая функция определения Telegram браузера
+  const isTelegramBrowser = () => {
     const userAgent = window.navigator.userAgent.toLowerCase();
-    const isTelegram =
+    return (
       userAgent.includes("telegram") ||
-      window.navigator.userAgent.includes("TelegramWebApp") ||
-      window.Telegram !== undefined;
-    const isInstagram = userAgent.includes("instagram");
-    const isWhatsapp = userAgent.includes("whatsapp");
-    const isFacebook = userAgent.includes("fbav") || userAgent.includes("fban");
-    const isVK = userAgent.includes("vkapp");
-    const isLine = userAgent.includes("line");
-    const isViber = userAgent.includes("viber");
+      userAgent.includes("tgweb") ||
+      window.location.href.includes("tg://") ||
+      typeof window.TelegramWebviewProxy !== "undefined"
+    );
+  };
 
-    const isInApp =
-      isTelegram ||
-      isInstagram ||
-      isWhatsapp ||
-      isFacebook ||
-      isVK ||
-      isLine ||
-      isViber;
-
-    setIsInAppBrowser(isInApp);
-
-    // Автоматическое перенаправление для Telegram
-    if (isTelegram) {
-      const url = window.location.href;
-      if (window.Telegram?.WebApp?.openTelegramLink) {
-        window.Telegram.WebApp.openTelegramLink(url);
-      } else {
-        window.location.href = `https://telegram.org/dl`;
-      }
+  useEffect(() => {
+    if (isTelegramBrowser()) {
+      setIsInAppBrowser(true);
     }
   }, []);
 
   const handleSignIn = async () => {
     try {
+      console.log("Начало процесса входа");
+      console.log("User Agent:", window.navigator.userAgent);
+      console.log("Is In App Browser:", isInAppBrowser);
+
       setIsLoading(true);
       const result = await signIn("google", {
         callbackUrl: "/",
@@ -63,11 +48,27 @@ export default function SignIn() {
       });
 
       if (result?.error) {
-        console.error("Ошибка входа:", result.error);
-        // Показать пользователю сообщение об ошибке
+        console.error("Детальная ошибка входа:", {
+          error: result.error,
+          status: result.status,
+          ok: result.ok,
+          url: result.url,
+          userAgent: window.navigator.userAgent,
+          isInAppBrowser,
+        });
+      } else {
+        console.log("Успешный вход:", {
+          result,
+          userAgent: window.navigator.userAgent,
+          isInAppBrowser,
+        });
       }
     } catch (error) {
-      console.error("Ошибка при входе:", error);
+      console.error("Критическая ошибка при входе:", {
+        error,
+        userAgent: window.navigator.userAgent,
+        isInAppBrowser,
+      });
     } finally {
       setIsLoading(false);
     }
@@ -78,42 +79,37 @@ export default function SignIn() {
     const userAgent = window.navigator.userAgent.toLowerCase();
     const isAndroid = userAgent.includes("android");
     const isIOS = /iphone|ipad|ipod/.test(userAgent);
-    const isTelegram =
-      userAgent.includes("telegram") ||
-      window.navigator.userAgent.includes("TelegramWebApp") ||
-      window.Telegram !== undefined;
 
-    if (isTelegram) {
-      // Специальная обработка для Telegram
-      if (window.Telegram?.WebApp?.openTelegramLink) {
-        window.Telegram.WebApp.openTelegramLink(url);
+    console.log("Попытка открытия в браузере:", {
+      url,
+      userAgent,
+      isAndroid,
+      isIOS,
+      isInAppBrowser,
+    });
+
+    try {
+      if (isAndroid) {
+        console.log("Открытие в Chrome (Android)");
+        window.location.href = `intent://${window.location.host}${window.location.pathname}#Intent;scheme=https;package=com.android.chrome;end`;
+      } else if (isIOS) {
+        console.log("Открытие в Chrome (iOS)");
+        window.location.href = `googlechrome://${window.location.host}${window.location.pathname}`;
+        setTimeout(() => {
+          console.log("Fallback на Safari (iOS)");
+          window.location.href = url;
+        }, 2500);
       } else {
-        // Fallback для старых версий
-        window.location.href = `tg://resolve?domain=share&url=${encodeURIComponent(
-          url
-        )}`;
+        console.log("Открытие в системном браузере");
+        window.open(url, "_system");
       }
-      return;
-    }
-
-    if (isAndroid) {
-      // Пробуем открыть в Chrome
-      window.location.href = `intent://${window.location.host}${window.location.pathname}#Intent;scheme=https;package=com.android.chrome;end`;
-
-      // Если Chrome не установлен, открываем в Samsung Internet или другом браузере
-      setTimeout(() => {
-        window.location.href = `https://${window.location.host}${window.location.pathname}`;
-      }, 2500);
-    } else if (isIOS) {
-      // Пробуем открыть в Chrome
-      window.location.href = `googlechrome://${window.location.host}${window.location.pathname}`;
-
-      // Если Chrome не установлен, открываем в Safari
-      setTimeout(() => {
-        window.location.href = `https://${window.location.host}${window.location.pathname}`;
-      }, 2500);
-    } else {
-      window.open(url, "_system");
+    } catch (error) {
+      console.error("Ошибка при открытии в браузере:", {
+        error,
+        userAgent,
+        isAndroid,
+        isIOS,
+      });
     }
   };
 

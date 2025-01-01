@@ -37,13 +37,17 @@ export const authOptions: NextAuthOptions = {
       }
       return session;
     },
-    async signIn({ user, account, profile, email, credentials }) {
-      console.log("Попытка входа:", {
-        user,
-        account,
-        profile,
-        email,
-        credentials,
+    async signIn({ user, account, profile }) {
+      console.log("Попытка входа на сервере:", {
+        user: {
+          id: user?.id,
+          email: user?.email,
+          name: user?.name,
+        },
+        accountType: account?.type,
+        accountProvider: account?.provider,
+        profileEmail: profile?.email,
+        timestamp: new Date().toISOString(),
       });
       return true;
     },
