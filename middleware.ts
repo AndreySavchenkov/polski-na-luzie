@@ -19,5 +19,5 @@ export default withAuth(
 );
 
 export const config = {
-  matcher: ["/words/:path*", "/dialog-sets/:path*", "/api/((?!auth).*)/*" ],
+  matcher: ["/words/:path*", "/dialog-sets/:path*", "/((?!api/auth).*)" ],
 };
