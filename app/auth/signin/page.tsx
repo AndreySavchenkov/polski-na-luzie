@@ -32,18 +32,15 @@ export default function SignIn() {
 
       try {
         if (isAndroid) {
-          // Прямое перенаправление в Chrome через intent
-
-          window.location.replace(
-            `intent://${window.location.host}${window.location.pathname}#Intent;scheme=https;package=com.android.chrome;end`
-          );
+          // Прямое открытие в Chrome для Android
+          window.location.href = `googlechrome://navigate?url=${encodeURIComponent(
+            window.location.href
+          )}`;
         } else if (isIOS) {
-          window.location.replace(
-            `googlechrome://${window.location.host}${window.location.pathname}`
-          );
+          window.location.href = `googlechrome://${window.location.host}${window.location.pathname}`;
         }
-        // Если перенаправление не сработало, делаем обычный вход через 1.5 секунды
-        setTimeout(handleSignIn, 1500);
+        // Делаем обычный вход через 1 секунду, если Chrome не открылся
+        setTimeout(handleSignIn, 1000);
       } catch (error) {
         console.error("Ошибка при открытии в Chrome:", error);
         handleSignIn();
