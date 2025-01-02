@@ -9,7 +9,7 @@
 
 body {
   color: var(--foreground);
-  background: var(--background);
+  background: linear-gradient(135deg, #1b1b1b 0%, #323232 100%);
   font-family: Arial, Helvetica, sans-serif;
 }
 
