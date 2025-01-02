@@ -32,8 +32,14 @@ export default function SignIn() {
 
       try {
         if (isAndroid) {
-          const fallbackUrl = encodeURIComponent(window.location.href);
-          window.location.href = `intent:${window.location.href}#Intent;package=com.android.chrome;S.browser_fallback_url=${fallbackUrl};end`;
+          // Сначала пробуем открыть через market схему
+          window.location.href = "market://details?id=com.android.chrome";
+
+          // Если market схема не сработала, пробуем через https
+          setTimeout(() => {
+            window.location.href =
+              "https://play.google.com/store/apps/details?id=com.android.chrome";
+          }, 500);
         } else if (isIOS) {
           window.location.href = `googlechrome://${window.location.host}${window.location.pathname}`;
         }
