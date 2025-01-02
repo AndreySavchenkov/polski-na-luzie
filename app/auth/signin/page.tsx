@@ -32,14 +32,19 @@ export default function SignIn() {
 
       try {
         if (isAndroid) {
-          // Сначала пробуем открыть через market схему
-          window.location.href = "market://details?id=com.android.chrome";
+          // Используем прямую схему для Chrome
+          const currentUrl = encodeURIComponent(window.location.href);
+          window.location.href = `googlechromes://${window.location.host}${window.location.pathname}`;
 
-          // Если market схема не сработала, пробуем через https
+          // Если первая попытка не удалась, пробуем альтернативную схему
           setTimeout(() => {
-            window.location.href =
-              "https://play.google.com/store/apps/details?id=com.android.chrome";
-          }, 500);
+            window.location.href = `intent://${window.location.host}${window.location.pathname}#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=${currentUrl};end`;
+          }, 100);
+
+          // Если и это не сработало, пробуем открыть через custom scheme
+          setTimeout(() => {
+            window.location.href = `chrome://${window.location.host}${window.location.pathname}`;
+          }, 200);
         } else if (isIOS) {
           window.location.href = `googlechrome://${window.location.host}${window.location.pathname}`;
         }
