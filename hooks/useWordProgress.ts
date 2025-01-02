@@ -15,7 +15,7 @@ export const useWordProgress = ({ userId }: UseWordProgressProps) => {
     const timeoutId = setTimeout(() => controller.abort(), 5000);
 
     try {
-      await fetch("/api/progress/save", {
+      const response = await fetch("/api/progress/save", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -26,6 +26,13 @@ export const useWordProgress = ({ userId }: UseWordProgressProps) => {
         }),
         signal: controller.signal,
       });
+
+      const progress = await response.json();
+
+      // Если слово выучено (3 правильных ответа), вызываем событие
+      if (progress.correct === 3) {
+        window.dispatchEvent(new Event("wordLearned"));
+      }
     } catch (error) {
       if (error instanceof Error && error.name === "AbortError") {
         console.log("Запрос был отменен из-за таймаута");

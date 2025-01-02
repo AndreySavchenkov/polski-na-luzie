@@ -3,11 +3,25 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useSession, signOut } from "next-auth/react";
+import { useState, useEffect } from "react";
 import logo from "@/public/logo.png";
+import { ScoreAnimation } from "./ScoreAnimation/ScoreAnimation";
 
 export default function Header() {
   const { data: session, status } = useSession();
   const isLoading = status === "loading";
+  const [showAnimation, setShowAnimation] = useState(false);
+
+  // Создаем глобальное событие для триггера анимации
+  useEffect(() => {
+    const handleWordLearned = () => {
+      setShowAnimation(true);
+      setTimeout(() => setShowAnimation(false), 3000);
+    };
+
+    window.addEventListener("wordLearned", handleWordLearned);
+    return () => window.removeEventListener("wordLearned", handleWordLearned);
+  }, []);
 
   if (isLoading) {
     return null;
@@ -28,15 +42,18 @@ export default function Header() {
         </Link>
         {session ? (
           <div className="flex items-center gap-3">
-            {session.user?.image && (
-              <Image
-                src={session.user.image}
-                width={32}
-                height={32}
-                alt={session.user.name || "User avatar"}
-                className="rounded-full border border-gray-600"
-              />
-            )}
+            <div className="relative">
+              {session.user?.image && (
+                <Image
+                  src={session.user.image}
+                  width={32}
+                  height={32}
+                  alt={session.user.name || "User avatar"}
+                  className="rounded-full border border-gray-600"
+                />
+              )}
+              <ScoreAnimation show={showAnimation} />
+            </div>
             <button
               onClick={() => signOut({ callbackUrl: "/" })}
               className="px-3 py-1 bg-red-700 rounded-md hover:bg-red-800"
