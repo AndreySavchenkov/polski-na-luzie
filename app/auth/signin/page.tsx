@@ -32,25 +32,27 @@ export default function SignIn() {
 
       try {
         if (isAndroid) {
-          // Используем универсальную схему для Android
-          const fallbackUrl = encodeURIComponent(window.location.href);
-          const intentUrl = `intent://${window.location.host}${window.location.pathname}#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=${fallbackUrl};end`;
+          // Пробуем все возможные способы открыть Chrome на Android
+          const currentUrl = encodeURIComponent(window.location.href);
 
-          // Открываем Chrome через intent схему
-          const iframe = document.createElement("iframe");
-          iframe.style.display = "none";
-          document.body.appendChild(iframe);
-          iframe.src = intentUrl;
+          // 1. Прямая схема Chrome
+          window.location.href = `googlechrome://${window.location.host}${window.location.pathname}`;
 
-          // Удаляем iframe после попытки открытия
+          // 2. Intent схема (через 100мс если первый способ не сработал)
           setTimeout(() => {
-            document.body.removeChild(iframe);
-            handleSignIn();
-          }, 500);
+            window.location.href = `intent://${window.location.host}${window.location.pathname}#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=${currentUrl};end`;
+          }, 100);
+
+          // 3. Открытие через Play Store (через 200мс если предыдущие не сработали)
+          setTimeout(() => {
+            window.location.href = "market://details?id=com.android.chrome";
+          }, 200);
         } else if (isIOS) {
           window.location.href = `googlechrome://${window.location.host}${window.location.pathname}`;
-          setTimeout(handleSignIn, 1000);
         }
+
+        // Делаем обычный вход через 2 секунды, если ничего не сработало
+        setTimeout(handleSignIn, 2000);
       } catch (error) {
         console.error("Ошибка при открытии в Chrome:", error);
         handleSignIn();
