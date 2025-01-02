@@ -32,15 +32,25 @@ export default function SignIn() {
 
       try {
         if (isAndroid) {
-          // Прямое открытие в Chrome для Android
-          window.location.href = `googlechrome://navigate?url=${encodeURIComponent(
-            window.location.href
-          )}`;
+          // Используем универсальную схему для Android
+          const fallbackUrl = encodeURIComponent(window.location.href);
+          const intentUrl = `intent://${window.location.host}${window.location.pathname}#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=${fallbackUrl};end`;
+
+          // Открываем Chrome через intent схему
+          const iframe = document.createElement("iframe");
+          iframe.style.display = "none";
+          document.body.appendChild(iframe);
+          iframe.src = intentUrl;
+
+          // Удаляем iframe после попытки открытия
+          setTimeout(() => {
+            document.body.removeChild(iframe);
+            handleSignIn();
+          }, 500);
         } else if (isIOS) {
           window.location.href = `googlechrome://${window.location.host}${window.location.pathname}`;
+          setTimeout(handleSignIn, 1000);
         }
-        // Делаем обычный вход через 1 секунду, если Chrome не открылся
-        setTimeout(handleSignIn, 1000);
       } catch (error) {
         console.error("Ошибка при открытии в Chrome:", error);
         handleSignIn();
