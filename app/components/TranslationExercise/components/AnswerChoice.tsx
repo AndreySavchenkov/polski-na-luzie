@@ -13,8 +13,9 @@ export const AnswerChoice = ({
 }: AnswerChoiceProps) => {
   return (
     <button
-      className={`w-full p-4 rounded-xl text-center text-lg font-medium 
+      className={`w-full p-4 text-center text-lg font-medium 
         transition-all duration-300 transform active:scale-95 min-h-[100px]
+        bg-gray-800/50 rounded-xl backdrop-blur-sm border border-gray-700 
         break-words cursor-pointer hyphens-auto outline-none focus:outline-none focus:ring-0
         active:outline-none active:ring-0 focus-visible:outline-none
         ${
