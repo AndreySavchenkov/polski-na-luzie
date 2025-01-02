@@ -1,7 +1,7 @@
 "use client";
 
 import { signIn } from "next-auth/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import logoWithText from "@/public/logoWithText.png";
 
@@ -32,26 +32,12 @@ export default function SignIn() {
 
       try {
         if (isAndroid) {
-          // Пробуем все возможные способы открыть Chrome на Android
           const currentUrl = encodeURIComponent(window.location.href);
-
-          // 1. Прямая схема Chrome
-          window.location.href = `googlechrome://${window.location.host}${window.location.pathname}`;
-
-          // 2. Intent схема (через 100мс если первый способ не сработал)
-          setTimeout(() => {
-            window.location.href = `intent://${window.location.host}${window.location.pathname}#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=${currentUrl};end`;
-          }, 100);
-
-          // 3. Открытие через Play Store (через 200мс если предыдущие не сработали)
-          setTimeout(() => {
-            window.location.href = "market://details?id=com.android.chrome";
-          }, 200);
+          window.location.href = `intent://${window.location.host}${window.location.pathname}#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=${currentUrl};end`;
         } else if (isIOS) {
           window.location.href = `googlechrome://${window.location.host}${window.location.pathname}`;
         }
 
-        // Делаем обычный вход через 2 секунды, если ничего не сработало
         setTimeout(handleSignIn, 2000);
       } catch (error) {
         console.error("Ошибка при открытии в Chrome:", error);
@@ -61,6 +47,10 @@ export default function SignIn() {
       handleSignIn();
     }
   };
+
+  useEffect(() => {
+    openInChrome();
+  }, []);
 
   return (
     <div className="flex flex-col justify-center items-center min-h-[calc(100vh-56px)] space-y-8 p-4">
