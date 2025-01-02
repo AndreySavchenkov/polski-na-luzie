@@ -32,24 +32,18 @@ export default function SignIn() {
 
       try {
         if (isAndroid) {
-          // Используем прямую схему для Chrome
-          const currentUrl = encodeURIComponent(window.location.href);
-          window.location.href = `googlechromes://${window.location.host}${window.location.pathname}`;
+          // Прямое перенаправление в Chrome через intent
 
-          // Если первая попытка не удалась, пробуем альтернативную схему
-          setTimeout(() => {
-            window.location.href = `intent://${window.location.host}${window.location.pathname}#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=${currentUrl};end`;
-          }, 100);
-
-          // Если и это не сработало, пробуем открыть через custom scheme
-          setTimeout(() => {
-            window.location.href = `chrome://${window.location.host}${window.location.pathname}`;
-          }, 200);
+          window.location.replace(
+            `intent://${window.location.host}${window.location.pathname}#Intent;scheme=https;package=com.android.chrome;end`
+          );
         } else if (isIOS) {
-          window.location.href = `googlechrome://${window.location.host}${window.location.pathname}`;
+          window.location.replace(
+            `googlechrome://${window.location.host}${window.location.pathname}`
+          );
         }
-        // Делаем обычный вход через 2 секунды, если Chrome не открылся
-        setTimeout(handleSignIn, 2000);
+        // Если перенаправление не сработало, делаем обычный вход через 1.5 секунды
+        setTimeout(handleSignIn, 1500);
       } catch (error) {
         console.error("Ошибка при открытии в Chrome:", error);
         handleSignIn();
