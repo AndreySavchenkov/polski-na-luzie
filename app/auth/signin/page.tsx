@@ -27,23 +27,18 @@ export default function SignIn() {
     const isChrome = userAgent.includes("chrome") && !userAgent.includes("wv");
 
     if (!isChrome) {
-      const isAndroid = /android|linux/i.test(userAgent);
+      const isAndroid = userAgent.includes("android");
       const isIOS = /iphone|ipad|ipod/.test(userAgent);
 
       try {
         if (isAndroid) {
-          window.location.href = `googlechrome://navigate?url=${encodeURIComponent(
-            window.location.href
-          )}`;
-
-          setTimeout(() => {
-            window.location.href = `intent://${window.location.host}${window.location.pathname}#Intent;scheme=https;package=com.android.chrome;end`;
-          }, 100);
+          const fallbackUrl = encodeURIComponent(window.location.href);
+          window.location.href = `intent:${window.location.href}#Intent;package=com.android.chrome;S.browser_fallback_url=${fallbackUrl};end`;
         } else if (isIOS) {
           window.location.href = `googlechrome://${window.location.host}${window.location.pathname}`;
         }
-        // Если не удалось открыть Chrome, делаем обычный вход
-        setTimeout(handleSignIn, 1500);
+        // Делаем обычный вход через 2 секунды, если Chrome не открылся
+        setTimeout(handleSignIn, 2000);
       } catch (error) {
         console.error("Ошибка при открытии в Chrome:", error);
         handleSignIn();
