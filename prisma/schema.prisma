@@ -38,16 +38,17 @@ model Session {
 }
 
 model User {
-  id            String     @id @default(auto()) @map("_id") @db.ObjectId
-  name          String?
-  email         String?    @unique
-  emailVerified DateTime?  @map("email_verified")
-  image         String?
-  username      String?    
-  language      String     @default("ru")
-  progress      Progress[]
-  accounts      Account[]
-  sessions      Session[]
+  id               String             @id @default(auto()) @map("_id") @db.ObjectId
+  name             String?
+  email            String?            @unique
+  emailVerified    DateTime?          @map("email_verified")
+  image            String?
+  username         String?
+  language         String             @default("ru")
+  progress         Progress[]
+  accounts         Account[]
+  sessions         Session[]
+  sentenceProgress SentenceProgress[]
 
   @@map("users")
 }
@@ -115,4 +116,14 @@ model Sentence {
   top      String
   left     String
   dialog   Dialog @relation(fields: [dialogId], references: [id])
+}
+
+model SentenceProgress {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId     String   @db.ObjectId
+  sentenceId String   @db.ObjectId
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
 }

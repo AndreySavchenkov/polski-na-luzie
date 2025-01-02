@@ -9,6 +9,8 @@ interface LeaderboardUser {
   name: string;
   image: string | null;
   learnedWords: number;
+  sentencePoints: number;
+  totalScore: number;
 }
 
 export const Leaderboard = () => {
@@ -78,7 +80,7 @@ export const Leaderboard = () => {
             <div className="flex-1">
               <div className="font-medium text-lg">{user.name}</div>
               <div className="text-sm text-gray-400">
-                Изучено слов: {user.learnedWords}
+                Общий счет: {user.totalScore}
               </div>
             </div>
 

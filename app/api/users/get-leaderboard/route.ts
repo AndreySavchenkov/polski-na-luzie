@@ -15,22 +15,30 @@ export async function GET() {
             },
           },
         },
+        sentenceProgress: true,
       },
     });
+
+    if (!users || users.length === 0) {
+      return NextResponse.json([]);
+    }
 
     const leaderboard = users
       .map((user) => ({
         id: user.id,
         name: user.name || "Пользователь",
         image: user.image,
-        learnedWords: user.progress.length,
+        learnedWords: user.progress?.length || 0,
+        sentencePoints: user.sentenceProgress?.length || 0,
+        totalScore:
+          (user.progress?.length || 0) + (user.sentenceProgress?.length || 0),
       }))
-      .sort((a, b) => b.learnedWords - a.learnedWords)
+      .sort((a, b) => b.totalScore - a.totalScore)
       .slice(0, 10);
 
     return NextResponse.json(leaderboard);
   } catch (error) {
-    console.error(error);
-    return new NextResponse("Внутренняя ошибка сервера", { status: 500 });
+    console.error("Ошибка при получении рейтинга:", error);
+    return NextResponse.json([], { status: 500 });
   }
 }

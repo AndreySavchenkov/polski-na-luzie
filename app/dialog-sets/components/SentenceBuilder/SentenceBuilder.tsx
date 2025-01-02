@@ -6,6 +6,7 @@ type Props = {
   dialogId: string;
   onCorrectSentence: (text: string) => void;
   text: string;
+  sentenceId: string;
 };
 
 const WordButton = ({
@@ -58,6 +59,7 @@ export const SentenceBuilder = ({
   dialogId,
   onCorrectSentence,
   text,
+  sentenceId,
 }: Props) => {
   const [shuffleWords, setShuffleWords] = useState<string[]>([]);
   const [selectedWords, setSelectedWords] = useState<string[]>([]);
@@ -98,15 +100,27 @@ export const SentenceBuilder = ({
     return word === correctWords[index];
   };
 
-  const handleCorrectAnswer = useCallback(() => {
+  const handleCorrectAnswer = useCallback(async () => {
     setIsCorrect(true);
     speak(text);
+
+    try {
+      await fetch("/api/sentence-progress/save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sentenceId }),
+      });
+
+      window.dispatchEvent(new Event("wordLearned"));
+    } catch (error) {
+      console.error("Ошибка при сохранении прогресса:", error);
+    }
 
     setTimeout(() => {
       setIsTransitioning(true);
       setTimeout(() => onCorrectSentence(text), 500);
     }, 1000);
-  }, [text, onCorrectSentence]);
+  }, [text, onCorrectSentence, sentenceId]);
 
   const handleSpeak = () => {
     speak(text);

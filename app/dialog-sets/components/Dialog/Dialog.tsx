@@ -64,6 +64,7 @@ export const Dialog = ({ dialog }: Props) => {
             key={dialog.sentences[currentSentenceIndex].id}
             dialogId={dialog.sentences[currentSentenceIndex].id}
             text={dialog.sentences[currentSentenceIndex].text}
+            sentenceId={dialog.sentences[currentSentenceIndex].id}
             onCorrectSentence={(text) =>
               handleCorrectSentence(
                 dialog.sentences[currentSentenceIndex].id,
