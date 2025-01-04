@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
+import { shuffleArray } from "@/helpers";
 
 export async function GET(req: NextRequest) {
   try {
@@ -14,7 +15,13 @@ export async function GET(req: NextRequest) {
       where: { topicId: topicId },
     });
 
-    return NextResponse.json(words, { status: 200 });
+    // Перемешиваем варианты ответов для каждого слова
+    const wordsWithShuffledAnswers = words.map((word) => ({
+      ...word,
+      russian: shuffleArray([...word.russian]),
+    }));
+
+    return NextResponse.json(wordsWithShuffledAnswers, { status: 200 });
   } catch (error) {
     console.error(error);
     return new NextResponse("Внутренняя ошибка сервера", { status: 500 });

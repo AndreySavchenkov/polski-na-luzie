@@ -46,12 +46,7 @@ export default function WordPage({ params }: TopicPageProps) {
           wordsResponse.json(),
         ])) as [Topic, Word[]];
 
-        const shuffledWords = wordsData.map((word: Word) => ({
-          ...word,
-          russian: shuffleArray([...word.russian]),
-        }));
-
-        const finalShuffledWords = shuffleArray(shuffledWords);
+        const finalShuffledWords = shuffleArray(wordsData);
 
         setTopic(topicData);
         setWords(finalShuffledWords);
