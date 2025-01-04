@@ -29,7 +29,6 @@ export const useWordProgress = ({ userId }: UseWordProgressProps) => {
 
       const progress = await response.json();
 
-      // Если слово выучено (3 правильных ответа), вызываем событие
       if (progress.correct === 3) {
         window.dispatchEvent(new Event("wordLearned"));
       }

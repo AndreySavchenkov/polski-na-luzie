@@ -43,13 +43,8 @@ const TranslationExercise = ({ words, userId }: TranslationExerciseProps) => {
       await saveProgress(currentWord.id, true);
       speak(currentWord.polish);
     } else {
-      if (currentProgress > 0) {
-        const newProgress = currentProgress - 1;
-        setCurrentProgress(newProgress);
-        await saveProgress(currentWord.id, false, newProgress);
-      } else {
-        await saveProgress(currentWord.id, false, 0);
-      }
+      setCurrentProgress(0);
+      await saveProgress(currentWord.id, false, 0);
     }
 
     setTimeout(() => {
