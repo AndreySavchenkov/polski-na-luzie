@@ -6,7 +6,7 @@ export const ProgressIndicator = ({
   currentProgress,
 }: ProgressIndicatorProps) => {
   return (
-    <div className="flex gap-3 p-4 bg-gray-800/30 rounded-xl backdrop-blur-sm">
+    <div className="flex gap-3 p-4 bg-gray-800/80 rounded-xl backdrop-blur-sm  border border-gray-700 ">
       {[...Array(3)].map((_, index) => (
         <div
           key={index}
