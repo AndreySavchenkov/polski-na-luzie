@@ -19,12 +19,12 @@ interface TranslationExerciseProps {
 const TranslationExercise = ({ words, userId }: TranslationExerciseProps) => {
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState("");
-  const [isCorrect, setIsCorrect] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [filteredWords, setFilteredWords] = useState<
     (Word & { progress: Progress | null })[]
   >([]);
   const [currentProgress, setCurrentProgress] = useState(0);
+  const [isCorrect, setIsCorrect] = useState(false);
 
   const { saveProgress, getInitialWords, fetchNewWords } = useWordProgress({
     userId,
@@ -41,21 +41,22 @@ const TranslationExercise = ({ words, userId }: TranslationExerciseProps) => {
     if (isAnswerCorrect) {
       setCurrentProgress((prev) => Math.min(prev + 1, 3));
       await saveProgress(currentWord.id, true);
-      speak(currentWord.polish);
     } else {
       setCurrentProgress(0);
       await saveProgress(currentWord.id, false, 0);
     }
+
+    speak(currentWord.polish);
 
     setTimeout(() => {
       if (currentWordIndex + 1 >= filteredWords.length) {
         handleFetchNewWords();
       } else {
         setCurrentWordIndex((prevIndex) => prevIndex + 1);
-        setIsCorrect(false);
+
         setSelectedAnswer("");
       }
-    }, 1000);
+    }, 2000);
   };
 
   const handleReset = async () => {
@@ -67,7 +68,6 @@ const TranslationExercise = ({ words, userId }: TranslationExerciseProps) => {
       setCurrentWordIndex(0);
       setCurrentProgress(0);
       setSelectedAnswer("");
-      setIsCorrect(false);
     }
     setIsLoading(false);
   };
@@ -85,7 +85,6 @@ const TranslationExercise = ({ words, userId }: TranslationExerciseProps) => {
       setCurrentWordIndex(0);
       setCurrentProgress(0);
       setSelectedAnswer("");
-      setIsCorrect(false);
     }
     setIsLoading(false);
   };
@@ -138,6 +137,7 @@ const TranslationExercise = ({ words, userId }: TranslationExerciseProps) => {
               key={answer}
               answer={answer}
               selectedAnswer={selectedAnswer}
+              correctAnswer={currentWord.correctAnswerRu}
               isCorrect={isCorrect}
               handleAnswerClick={handleAnswerClick}
             />

@@ -1,6 +1,7 @@
 type AnswerChoiceProps = {
   answer: string;
   selectedAnswer: string;
+  correctAnswer: string;
   isCorrect: boolean;
   handleAnswerClick: (answer: string) => void;
 };
@@ -8,15 +9,19 @@ type AnswerChoiceProps = {
 export const AnswerChoice = ({
   answer,
   selectedAnswer,
+  correctAnswer,
   isCorrect,
   handleAnswerClick,
 }: AnswerChoiceProps) => {
   const getButtonStyle = () => {
     if (selectedAnswer === "") return "bg-gray-800/80";
-    if (selectedAnswer !== answer) return "bg-gray-800/80";
-    return isCorrect
-      ? "bg-green-600 text-white pointer-events-none"
-      : "bg-red-600 text-white pointer-events-none";
+    if (selectedAnswer === answer)
+      return isCorrect
+        ? "bg-green-600 text-white pointer-events-none"
+        : "bg-red-600 text-white pointer-events-none";
+    if (answer === correctAnswer && !isCorrect)
+      return "bg-green-600 text-white pointer-events-none";
+    return "bg-gray-800/80 pointer-events-none opacity-50";
   };
 
   return (
