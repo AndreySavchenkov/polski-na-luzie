@@ -41,7 +41,7 @@ export default function WordsPage() {
     return (
       <div className="p-4">
         <h1 className="text-2xl font-bold mb-4">Наборы слов</h1>
-        <CardsGridSkeleton />
+        <CardsGridSkeleton isWordSet={true} />
       </div>
     );
   }
