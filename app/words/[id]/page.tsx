@@ -5,6 +5,7 @@ import { TranslationExerciseSkeleton } from "@/app/components/TranslationExercis
 import { Topic, Word } from "@/types";
 import { useSession } from "next-auth/react";
 import { useEffect, useState, use } from "react";
+import { shuffleArray } from "@/helpers";
 
 interface TopicPageProps {
   params: Promise<{ id: string }>;
@@ -40,13 +41,20 @@ export default function WordPage({ params }: TopicPageProps) {
           throw new Error("Ошибка при загрузке данных");
         }
 
-        const [topicData, wordsData] = await Promise.all([
+        const [topicData, wordsData] = (await Promise.all([
           topicResponse.json(),
           wordsResponse.json(),
-        ]);
+        ])) as [Topic, Word[]];
+
+        const shuffledWords = wordsData.map((word: Word) => ({
+          ...word,
+          russian: shuffleArray([...word.russian]),
+        }));
+
+        const finalShuffledWords = shuffleArray(shuffledWords);
 
         setTopic(topicData);
-        setWords(wordsData);
+        setWords(finalShuffledWords);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Произошла ошибка");
       } finally {
