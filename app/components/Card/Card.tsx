@@ -6,6 +6,7 @@ interface CardProps {
   onClick?: () => void;
   totalWords?: number;
   learnedWords?: number;
+  isLesson?: boolean;
 }
 
 export const Card = ({
@@ -14,6 +15,7 @@ export const Card = ({
   onClick,
   totalWords,
   learnedWords,
+  isLesson,
 }: CardProps) => {
   const getBackgroundColor = () => {
     if (!totalWords || !learnedWords)
@@ -48,7 +50,7 @@ export const Card = ({
         </div>
         {totalWords !== undefined && (
           <div className="text-sm text-gray-400">
-            Изучено: {learnedWords || 0} из {totalWords} слов
+            Изучено: {learnedWords || 0} из {totalWords} {isLesson ? "предложений" : "слов"}
           </div>
         )}
       </div>

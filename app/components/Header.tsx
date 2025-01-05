@@ -34,12 +34,18 @@ export default function Header() {
       </Link>
 
       <nav className="max-w-7xl flex items-center gap-4 py-3 px-2">
+        <Link
+          href="/lessons"
+          className="px-3 py-1 hover:bg-gray-800 rounded-md transition-colors"
+        >
+          Уроки
+        </Link>
         <Link className="hover:text-gray-400" href="/words">
           Слова
         </Link>
-        <Link className="hover:text-gray-400" href="/dialog-sets">
+        {/* <Link className="hover:text-gray-400" href="/dialog-sets">
           Фразы
-        </Link>
+        </Link> */}
         {session ? (
           <div className="flex items-center gap-3">
             <div className="relative">
