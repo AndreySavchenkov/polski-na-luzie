@@ -34,6 +34,16 @@ export async function POST(req: NextRequest) {
       },
     });
 
+    if (isCorrect) {
+      // Добавляем запись в sentenceProgress для увеличения рейтинга
+      await db.sentenceProgress.create({
+        data: {
+          userId: session.user.id,
+          sentenceId: exerciseId,
+        },
+      });
+    }
+
     // Получаем информацию об упражнении и уроке
     const exercise = await db.lessonExercise.findUnique({
       where: { id: exerciseId },

@@ -43,9 +43,9 @@ export default function Header() {
         <Link className="hover:text-gray-400" href="/words">
           Слова
         </Link>
-        <Link className="hover:text-gray-400" href="/dialog-sets">
+        {/* <Link className="hover:text-gray-400" href="/dialog-sets">
           Фразы
-        </Link>
+        </Link> */}
         {session ? (
           <div className="flex items-center gap-3">
             <div className="relative">

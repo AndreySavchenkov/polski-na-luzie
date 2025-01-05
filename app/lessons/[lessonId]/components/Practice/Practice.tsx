@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import { speak } from "@/helpers";
 import { CompletedState } from "./components/CompletedState";
 import { ProgressIndicator } from "./components/ProgressIndicator";
+import { SpeakerLoudIcon } from "@radix-ui/react-icons";
 
 interface Exercise {
   id: string;
@@ -27,6 +28,8 @@ export const Practice = () => {
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [showCompleted, setShowCompleted] = useState(false);
   const [incorrectExercises, setIncorrectExercises] = useState<string[]>([]);
+  const [isChecking, setIsChecking] = useState(false);
+  const [showColors, setShowColors] = useState(false);
 
   useEffect(() => {
     const fetchExercises = async () => {
@@ -37,6 +40,15 @@ export const Practice = () => {
         if (response.ok) {
           const data = await response.json();
           setExercises(data.exercises);
+
+          const allCompleted = data.exercises.every(
+            (ex: Exercise) => ex.completed
+          );
+          if (allCompleted) {
+            setShowCompleted(true);
+            return;
+          }
+
           const firstIncomplete = data.exercises.find(
             (ex: Exercise) => !ex.completed
           );
@@ -77,6 +89,8 @@ export const Practice = () => {
   };
 
   const handleCheck = async () => {
+    setIsChecking(true);
+    setShowColors(true);
     const answer = selectedWords.join(" ");
     const isAnswerCorrect = answer === currentExercise?.textPl;
     setIsCorrect(isAnswerCorrect);
@@ -99,6 +113,7 @@ export const Practice = () => {
           incorrectExercises.filter((id) => id !== currentExercise.id)
         );
         speak(currentExercise.textPl);
+        window.dispatchEvent(new Event("wordLearned"));
       }
 
       await fetch("/api/lessons/exercises/save-progress", {
@@ -147,6 +162,11 @@ export const Practice = () => {
         setSelectedWords([]);
       }, 2000);
     }
+
+    setTimeout(() => {
+      setShowColors(false);
+      setIsChecking(false);
+    }, 2000);
   };
 
   const handleReset = async () => {
@@ -171,6 +191,17 @@ export const Practice = () => {
     }
   };
 
+  const isWordInCorrectPosition = (word: string, index: number) => {
+    const correctWords = currentExercise?.textPl.split(" ") || [];
+    return word === correctWords[index];
+  };
+
+  const handleSpeak = () => {
+    if (currentExercise) {
+      speak(currentExercise.textPl);
+    }
+  };
+
   if (isLoading) {
     return <div>Загрузка...</div>;
   }
@@ -180,11 +211,15 @@ export const Practice = () => {
   }
 
   return (
-    <div className="space-y-6 pb-24 min-h-[calc(100vh-220px)] max-w-[400px] mx-auto">
+    <div className="space-y-6 pb-24 min-h-[calc(100vh-220px)] max-w-[600px] mx-auto">
       <div className="text-center">
-        <h3 className="text-xl font-semibold mb-2">
-          {currentExercise?.textRu}
-        </h3>
+        <div className="flex items-center justify-center gap-3 mb-2">
+          <h3 className="text-xl font-semibold">{currentExercise?.textRu}</h3>
+          <SpeakerLoudIcon
+            onClick={handleSpeak}
+            className="w-6 h-6 cursor-pointer active:scale-90 transition-transform text-gray-400 hover:text-gray-300"
+          />
+        </div>
         <p className="text-gray-400">{currentExercise?.textEn}</p>
       </div>
 
@@ -194,7 +229,15 @@ export const Practice = () => {
             <button
               key={index}
               onClick={() => handleWordRemove(index)}
-              className="px-3 py-1 bg-indigo-600 rounded-full"
+              className={`px-3 py-2 rounded-full transition-all duration-300 ${
+                showColors
+                  ? isCorrect
+                    ? "bg-green-600"
+                    : isWordInCorrectPosition(word, index)
+                    ? "bg-green-600"
+                    : "bg-red-600"
+                  : "bg-indigo-600"
+              }`}
             >
               {word}
             </button>
@@ -207,7 +250,7 @@ export const Practice = () => {
           <button
             key={index}
             onClick={() => handleWordSelect(word)}
-            className="px-3 py-1 bg-gray-700 rounded-full hover:bg-gray-600"
+            className="px-3 py-2 bg-gray-700 rounded-full hover:bg-gray-600"
           >
             {word}
           </button>
@@ -216,10 +259,29 @@ export const Practice = () => {
 
       <button
         onClick={handleCheck}
-        disabled={selectedWords.length === 0}
-        className="w-full py-4 bg-indigo-600 rounded-lg disabled:opacity-50 mb-4"
+        disabled={selectedWords.length === 0 || isChecking}
+        className={`
+          w-full py-4 bg-indigo-600 rounded-lg
+          disabled:opacity-50 mb-4
+          transition-all duration-300 transform
+          hover:bg-indigo-700
+          active:scale-[0.98]
+          disabled:hover:bg-indigo-600
+          disabled:cursor-not-allowed
+          relative
+          ${isChecking ? "animate-pulse" : ""}
+        `}
       >
-        Проверить
+        <div className="flex items-center justify-center gap-2">
+          {isChecking ? (
+            <>
+              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              <span>Проверяем...</span>
+            </>
+          ) : (
+            <span>Проверить</span>
+          )}
+        </div>
       </button>
 
       <ProgressIndicator exercises={exercises} />
