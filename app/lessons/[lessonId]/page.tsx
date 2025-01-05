@@ -52,7 +52,7 @@ export default function LessonPage() {
         </button>
       </div>
 
-      <div className="bg-gray-800/30 backdrop-blur-sm rounded-xl border border-gray-700 p-4">
+      <div className="bg-gray-800/30  rounded-xl border border-gray-700 p-4">
         {activeTab === "theory" ? <Theory /> : <Practice />}
       </div>
     </div>

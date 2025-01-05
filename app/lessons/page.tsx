@@ -45,7 +45,7 @@ export default function LessonsPage() {
     return (
       <div className="p-4">
         <h1 className="text-2xl font-bold mb-4">Доступные Уроки</h1>
-        <CardsGridSkeleton isWordSet={false} />
+        <CardsGridSkeleton isWordSet />
       </div>
     );
   }
@@ -61,6 +61,7 @@ export default function LessonsPage() {
             title={`Урок ${lesson.order}: ${lesson.title}`}
             totalWords={lesson.totalExercises}
             learnedWords={lesson.completedExercises}
+            isLesson
           />
         ))}
       </div>
