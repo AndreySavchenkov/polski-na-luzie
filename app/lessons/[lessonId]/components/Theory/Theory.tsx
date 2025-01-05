@@ -1,5 +1,7 @@
+import { lazy, Suspense } from "react";
 import { useParams } from "next/navigation";
-import Lesson1 from "./components/Lesson1/Lesson1";
+
+const Lesson1 = lazy(() => import("./components/Lesson1/Lesson1"));
 
 const lessons = [
   {
@@ -24,7 +26,9 @@ export const Theory = () => {
 
   return (
     <div className="space-y-6 max-w-2xl mx-auto">
-      <LessonComponent />
+      <Suspense fallback={<div>Загрузка...</div>}>
+        <LessonComponent />
+      </Suspense>
     </div>
   );
 };
