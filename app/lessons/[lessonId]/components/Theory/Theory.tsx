@@ -1,10 +1,30 @@
+import { useParams } from "next/navigation";
+import Lesson1 from "./components/Lesson1/Lesson1";
+
+const lessons = [
+  {
+    id: "677a694b2b7dcea86fc71198",
+    component: Lesson1,
+  },
+];
+
 export const Theory = () => {
+  const params = useParams();
+  const currentLesson = lessons.find((lesson) => lesson.id === params.lessonId);
+
+  if (!currentLesson) {
+    return (
+      <div className="text-center text-gray-400">
+        Теоретический материал для этого урока пока не доступен
+      </div>
+    );
+  }
+
+  const LessonComponent = currentLesson.component;
+
   return (
-    <div className="space-y-4">
-      <h2 className="text-xl font-semibold">Теоретический материал</h2>
-      <p className="text-gray-300">
-        Здесь будет отображаться теоретический материал по польскому языку.
-      </p>
+    <div className="space-y-6 max-w-2xl mx-auto">
+      <LessonComponent />
     </div>
   );
 };
