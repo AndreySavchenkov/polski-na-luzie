@@ -75,6 +75,7 @@ model Topic {
 model Word {
   id              String     @id @default(auto()) @map("_id") @db.ObjectId
   polish          String
+  pronunciation   String?
   russian         String[]
   english         String[] // Поле для английских переводов
   correctAnswerRu String // Поле для хранения правильного ответа

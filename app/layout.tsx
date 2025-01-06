@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "./components/Header";
 import { Providers } from "@/app/providers";
 import Footer from "./components/Footer";
+import { notoSans } from "./fonts";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,7 +27,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={notoSans.variable}>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
       >

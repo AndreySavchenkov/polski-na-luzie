@@ -16,6 +16,7 @@ export interface User {
 export interface Word {
   id: string;
   polish: string;
+  pronunciation?: string;
   russian: string[];
   english: string[];
   correctAnswerRu: string;
