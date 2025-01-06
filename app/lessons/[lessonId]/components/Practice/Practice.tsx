@@ -211,80 +211,84 @@ export const Practice = () => {
   }
 
   return (
-    <div className="space-y-6 pb-24 min-h-[calc(100vh-220px)] max-w-[600px] mx-auto">
-      <div className="text-center">
-        <div className="flex items-center justify-center gap-3 mb-2">
-          <h3 className="text-xl font-semibold">{currentExercise?.textRu}</h3>
-          <SpeakerLoudIcon
-            onClick={handleSpeak}
-            className="w-6 h-6 cursor-pointer active:scale-90 transition-transform text-gray-400 hover:text-gray-300"
-          />
+    <div className="relative flex flex-col min-h-[calc(100vh-220px)]">
+      <div className="flex-grow space-y-6 max-w-[600px] mx-auto w-full">
+        <div className="text-center">
+          <div className="flex items-center justify-center gap-3 mb-2">
+            <h3 className="text-xl font-semibold">{currentExercise?.textRu}</h3>
+            <SpeakerLoudIcon
+              onClick={handleSpeak}
+              className="w-6 h-6 cursor-pointer active:scale-90 transition-transform text-gray-400 hover:text-gray-300"
+            />
+          </div>
+          <p className="text-gray-400">{currentExercise?.textEn}</p>
         </div>
-        <p className="text-gray-400">{currentExercise?.textEn}</p>
-      </div>
 
-      <div className="min-h-[100px] p-4 border border-gray-700 rounded-lg">
+        <div className="min-h-[100px] p-4 border border-gray-700 rounded-lg">
+          <div className="flex flex-wrap gap-2">
+            {selectedWords.map((word, index) => (
+              <button
+                key={index}
+                onClick={() => handleWordRemove(index)}
+                className={`px-3 py-2 rounded-full transition-all duration-300 ${
+                  showColors
+                    ? isCorrect
+                      ? "bg-green-600"
+                      : isWordInCorrectPosition(word, index)
+                      ? "bg-green-600"
+                      : "bg-red-600"
+                    : "bg-indigo-600"
+                }`}
+              >
+                {word}
+              </button>
+            ))}
+          </div>
+        </div>
+
         <div className="flex flex-wrap gap-2">
-          {selectedWords.map((word, index) => (
+          {availableWords.map((word, index) => (
             <button
               key={index}
-              onClick={() => handleWordRemove(index)}
-              className={`px-3 py-2 rounded-full transition-all duration-300 ${
-                showColors
-                  ? isCorrect
-                    ? "bg-green-600"
-                    : isWordInCorrectPosition(word, index)
-                    ? "bg-green-600"
-                    : "bg-red-600"
-                  : "bg-indigo-600"
-              }`}
+              onClick={() => handleWordSelect(word)}
+              className="px-3 py-2 bg-gray-700 rounded-full hover:bg-gray-600"
             >
               {word}
             </button>
           ))}
         </div>
+
+        <button
+          onClick={handleCheck}
+          disabled={selectedWords.length === 0 || isChecking}
+          className={`
+            w-full py-4 bg-indigo-600 rounded-lg
+            disabled:opacity-50
+            transition-all duration-300 transform
+            hover:bg-indigo-700
+            active:scale-[0.98]
+            disabled:hover:bg-indigo-600
+            disabled:cursor-not-allowed
+            relative
+            ${isChecking ? "animate-pulse" : ""}
+          `}
+        >
+          <div className="flex items-center justify-center gap-2">
+            {isChecking ? (
+              <>
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                <span>Проверяем...</span>
+              </>
+            ) : (
+              <span>Проверить</span>
+            )}
+          </div>
+        </button>
       </div>
 
-      <div className="flex flex-wrap gap-2">
-        {availableWords.map((word, index) => (
-          <button
-            key={index}
-            onClick={() => handleWordSelect(word)}
-            className="px-3 py-2 bg-gray-700 rounded-full hover:bg-gray-600"
-          >
-            {word}
-          </button>
-        ))}
+      <div className="sticky bottom-4 w-full">
+        <ProgressIndicator exercises={exercises} />
       </div>
-
-      <button
-        onClick={handleCheck}
-        disabled={selectedWords.length === 0 || isChecking}
-        className={`
-          w-full py-4 bg-indigo-600 rounded-lg
-          disabled:opacity-50 mb-4
-          transition-all duration-300 transform
-          hover:bg-indigo-700
-          active:scale-[0.98]
-          disabled:hover:bg-indigo-600
-          disabled:cursor-not-allowed
-          relative
-          ${isChecking ? "animate-pulse" : ""}
-        `}
-      >
-        <div className="flex items-center justify-center gap-2">
-          {isChecking ? (
-            <>
-              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-              <span>Проверяем...</span>
-            </>
-          ) : (
-            <span>Проверить</span>
-          )}
-        </div>
-      </button>
-
-      <ProgressIndicator exercises={exercises} />
     </div>
   );
 };

@@ -13,8 +13,8 @@ interface ProgressIndicatorProps {
 export const ProgressIndicator = memo(
   ({ exercises }: ProgressIndicatorProps) => {
     return (
-      <div className="fixed bottom-16 left-1/2 -translate-x-1/2 w-full max-w-[90%] md:max-w-[600px] z-10">
-        <div className="bg-gray-800/95 backdrop-blur-sm border border-gray-700 rounded-xl p-4 shadow-lg">
+      <div className="flex justify-center w-full px-4">
+        <div className="bg-gray-800/95 backdrop-blur-sm border border-gray-700 rounded-xl p-4 shadow-lg w-full max-w-[600px]">
           <div className="flex flex-wrap gap-2 justify-center items-center">
             {exercises.map((exercise) => (
               <motion.div

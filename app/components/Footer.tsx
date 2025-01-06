@@ -15,10 +15,6 @@ export default function Footer() {
             <InstagramLogoIcon className="w-5 h-5" />
             <span>Связаться со мной</span>
           </Link>
-
-          <div className="text-sm text-gray-500">
-            © {new Date().getFullYear()} Polski Na Luzie
-          </div>
         </div>
       </div>
     </footer>
