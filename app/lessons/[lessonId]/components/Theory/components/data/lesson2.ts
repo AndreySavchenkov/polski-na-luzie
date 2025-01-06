@@ -1,6 +1,4 @@
-import { VocabularyTable } from "@/app/components/VocabularyTable/VocabularyTable";
-
-const family = [
+export const family = [
   {
     polish: "rodzina",
     pronunciation: "rɔˈd͡ʑina",
@@ -98,7 +96,7 @@ const family = [
   },
 ];
 
-const adjectives = [
+export const adjectives = [
   {
     polish: "młody",
     pronunciation: "ˈmwɔdɨ",
@@ -136,7 +134,7 @@ const adjectives = [
   },
 ];
 
-const phrases = [
+export const phrases = [
   {
     polish: "Mam na imię...",
     pronunciation: "mam na ˈimʲɛ",
@@ -184,7 +182,7 @@ const phrases = [
   },
 ];
 
-const possessive = [
+export const possessive = [
   {
     polish: "Mój brat",
     pronunciation: "muj ˈbrat",
@@ -216,41 +214,3 @@ const possessive = [
     translation: "Твоё имя",
   },
 ];
-
-export default function Lesson2() {
-  return (
-    <>
-      <h2 className="text-2xl font-bold text-center mb-8">
-        1. Слова, связанные с семьёй
-      </h2>
-
-      <p className="text-gray-300 mb-8">
-        Основные слова, которые описывают семью и её членов:
-      </p>
-
-      <VocabularyTable title="Семья" items={family} />
-
-      <h2 className="text-2xl font-bold text-center mb-8">
-        2. Прилагательные для описания членов семьи
-      </h2>
-
-      <VocabularyTable title="Прилагательные" items={adjectives} />
-
-      <h2 className="text-2xl font-bold text-center mb-8">
-        3. Личная информация: основные фразы
-      </h2>
-
-      <p className="text-gray-300 mb-8">
-        Эти фразы помогут рассказать о себе или задать вопросы другому человеку:
-      </p>
-
-      <VocabularyTable title="Фразы" items={phrases} />
-
-      <h2 className="text-2xl font-bold text-center mb-8">
-        4. Притяжательные местоимения для семьи
-      </h2>
-
-      <VocabularyTable title="Местоимения" items={possessive} />
-    </>
-  );
-}
