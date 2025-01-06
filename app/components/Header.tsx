@@ -28,7 +28,7 @@ export default function Header() {
   }
 
   return (
-    <div className="flex items-center justify-between sticky top-0 z-50 bg-gray-800 text-white shadow-lg">
+    <div className="flex items-center justify-between sticky top-0 z-50 bg-gray-800/30 backdrop-blur-sm border-b border-gray-700 text-white shadow-lg">
       <Link href="/" className="px-2">
         <Image src={logo} width={56} height={56} quality={100} alt="logo" />
       </Link>
@@ -36,16 +36,16 @@ export default function Header() {
       <nav className="max-w-7xl flex items-center gap-4 py-3 px-2">
         <Link
           href="/lessons"
-          className="px-3 py-1 hover:bg-gray-800 rounded-md transition-colors"
+          className="px-3 py-1 hover:bg-gray-700/50 rounded-md transition-colors"
         >
           Уроки
         </Link>
-        <Link className="hover:text-gray-400" href="/words">
+        <Link
+          href="/words"
+          className="px-3 py-1 hover:bg-gray-700/50 rounded-md transition-colors"
+        >
           Слова
         </Link>
-        {/* <Link className="hover:text-gray-400" href="/dialog-sets">
-          Фразы
-        </Link> */}
         {session ? (
           <div className="flex items-center gap-3">
             <div className="relative">
@@ -62,7 +62,7 @@ export default function Header() {
             </div>
             <button
               onClick={() => signOut({ callbackUrl: "/" })}
-              className="px-3 py-1 bg-red-700 rounded-md hover:bg-red-800"
+              className="px-3 py-1 bg-red-700/80 hover:bg-red-800/80 rounded-md transition-colors"
             >
               Выйти
             </button>
@@ -70,7 +70,7 @@ export default function Header() {
         ) : (
           <Link
             href="/auth/signin"
-            className="px-3 py-1 bg-indigo-800 rounded-md hover:bg-indigo-900"
+            className="px-3 py-1 bg-indigo-600/80 hover:bg-indigo-700/80 rounded-md transition-colors"
           >
             Войти
           </Link>

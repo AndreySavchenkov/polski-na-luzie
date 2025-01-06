@@ -11,7 +11,7 @@ export default function LessonPage() {
   const [activeTab, setActiveTab] = useState<Tab>("theory");
 
   return (
-    <div className="p-3">
+    <div className="py-3 px-0 sm:px-3">
       
 
       <div className="flex gap-4 mb-6">
@@ -52,7 +52,7 @@ export default function LessonPage() {
         </button>
       </div>
 
-      <div className="bg-gray-800/30  rounded-xl border border-gray-700 p-4">
+      <div className="bg-gray-800/30  rounded-xl border border-gray-700 py-4 px-2 sm:px-4">
         {activeTab === "theory" ? <Theory /> : <Practice />}
       </div>
     </div>
