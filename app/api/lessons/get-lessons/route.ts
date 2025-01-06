@@ -34,18 +34,24 @@ export async function GET() {
       },
     });
 
-    const formattedLessons = lessons.map((lesson) => ({
-      id: lesson.id,
-      title: lesson.title,
-      description: lesson.description,
-      order: lesson.order,
-      totalExercises: lesson.exercises.length,
-      completedExercises: lesson.exercises.filter(
-        (ex) => ex.userProgress.length > 0
-      ).length,
-      completed: lesson.userProgress[0]?.completed || false,
-      isAvailable: true, // Логику доступности можно настроить по необходимости
-    }));
+    const formattedLessons = lessons.map((lesson, index, array) => {
+      const previousLesson = array.find((l) => l.order === lesson.order - 1);
+      const isAvailable =
+        !previousLesson || previousLesson.userProgress[0]?.completed;
+
+      return {
+        id: lesson.id,
+        title: lesson.title,
+        description: lesson.description,
+        order: lesson.order,
+        totalExercises: lesson.exercises.length,
+        completedExercises: lesson.exercises.filter(
+          (ex) => ex.userProgress.length > 0
+        ).length,
+        completed: lesson.userProgress[0]?.completed || false,
+        isAvailable: isAvailable,
+      };
+    });
 
     return NextResponse.json(formattedLessons);
   } catch (error) {
