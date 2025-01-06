@@ -177,7 +177,7 @@ const answers = [
 export default function Lesson1() {
   return (
     <>
-    <h2 className="text-2xl font-bold text-center mb-8">
+      <h2 className="text-2xl font-bold text-center mb-8">
         1. Приветствия и прощания
       </h2>
 

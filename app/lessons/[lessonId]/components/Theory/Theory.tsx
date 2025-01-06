@@ -2,11 +2,16 @@ import { lazy, Suspense } from "react";
 import { useParams } from "next/navigation";
 
 const Lesson1 = lazy(() => import("./components/Lesson1/Lesson1"));
+const Lesson2 = lazy(() => import("./components/Lesson2/Lesson2"));
 
 const lessons = [
   {
     id: "677a694b2b7dcea86fc71198",
     component: Lesson1,
+  },
+  {
+    id: "677bcbe9adb6f974bd2473af",
+    component: Lesson2,
   },
 ];
 
