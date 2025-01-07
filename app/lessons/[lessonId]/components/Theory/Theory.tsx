@@ -4,6 +4,7 @@ import { useParams } from "next/navigation";
 const Lesson1 = lazy(() => import("./components/Lesson1"));
 const Lesson2 = lazy(() => import("./components/Lesson2"));
 const Lesson3 = lazy(() => import("./components/Lesson3"));
+const Lesson4 = lazy(() => import("./components/Lesson4"));
 
 const lessons = [
   {
@@ -17,6 +18,10 @@ const lessons = [
   {
     id: "677c34ecadb6f974bd2474d9",
     component: Lesson3,
+  },
+  {
+    id: "677cca2e01aac7136b90af48",
+    component: Lesson4,
   },
 ];
 
