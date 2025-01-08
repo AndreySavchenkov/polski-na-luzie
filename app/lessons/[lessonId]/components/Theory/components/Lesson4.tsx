@@ -2,7 +2,7 @@ import { VocabularyTable } from "@/app/components/VocabularyTable/VocabularyTabl
 import { memo } from "react";
 import { foodItems, shoppingPhrases, stores } from "./data/lesson4";
 
-const Lesson4 = memo(function Lesson2() {
+const Lesson4 = memo(function Lesson4() {
   return (
     <>
       <h2 className="text-2xl font-bold text-center mb-8">1. Лексика</h2>
