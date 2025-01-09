@@ -36,9 +36,9 @@ export const VocabularyTable = ({
             <div className="flex-1">
               <button
                 onClick={() => speak(item.polish)}
-                className="flex items-center gap-2 text-xl font-medium text-white hover:text-indigo-400 transition-colors"
+                className="flex items-center  gap-2 text-xl font-medium text-white hover:text-indigo-400 transition-colors"
               >
-                {item.polish}
+                <span className="text-start">{item.polish}</span>
                 <SpeakerLoudIcon className="w-5 h-5 text-gray-400 hover:text-gray-300" />
               </button>
               <p className="text-sm text-gray-400">[{item.pronunciation}]</p>
