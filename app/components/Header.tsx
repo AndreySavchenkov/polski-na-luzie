@@ -12,7 +12,6 @@ export default function Header() {
   const isLoading = status === "loading";
   const [showAnimation, setShowAnimation] = useState(false);
 
-  // Создаем глобальное событие для триггера анимации
   useEffect(() => {
     const handleWordLearned = () => {
       setShowAnimation(true);
@@ -55,7 +54,7 @@ export default function Header() {
                   width={32}
                   height={32}
                   alt={session.user.name || "User avatar"}
-                  className="rounded-full border border-gray-600"
+                  className="rounded-full border border-gray-600 transition-transform duration-500"
                 />
               )}
               <ScoreAnimation show={showAnimation} />
