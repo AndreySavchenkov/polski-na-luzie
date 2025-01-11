@@ -22,6 +22,7 @@ export interface Word {
   correctAnswerRu: string;
   correctAnswerEn: string;
   topicId: string;
+  imageUrl?: string;
 }
 
 export interface Topic {

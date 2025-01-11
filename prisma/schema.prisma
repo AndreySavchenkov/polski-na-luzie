@@ -77,9 +77,10 @@ model Word {
   polish          String
   pronunciation   String?
   russian         String[]
-  english         String[] // Поле для английских переводов
-  correctAnswerRu String // Поле для хранения правильного ответа
-  correctAnswerEn String // Поле для хранения правильного ответа
+  english         String[]
+  correctAnswerRu String
+  correctAnswerEn String
+  imageUrl        String?
   topicId         String     @map("topic_id") @db.ObjectId
   topic           Topic      @relation(fields: [topicId], references: [id])
   Progress        Progress[]
@@ -91,7 +92,7 @@ model Progress {
   wordId   String @map("word_id") @db.ObjectId
   attempts Int    @default(0)
   correct  Int    @default(0)
-  stage    Int    @default(0) // Поле для хранения стадии изучения (0-3)
+  stage    Int    @default(0) 
   user     User   @relation(fields: [userId], references: [id])
   word     Word   @relation(fields: [wordId], references: [id])
 
