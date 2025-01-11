@@ -7,6 +7,7 @@ const Lesson3 = lazy(() => import("./components/Lesson3"));
 const Lesson4 = lazy(() => import("./components/Lesson4"));
 const Lesson5 = lazy(() => import("./components/Lesson5"));
 const Lesson6 = lazy(() => import("./components/Lesson6"));
+const Lesson7 = lazy(() => import("./components/Lesson7"));
 
 const lessons = [
   {
@@ -32,6 +33,10 @@ const lessons = [
   {
     id: "677f844301aac7136b90b340",
     component: Lesson6,
+  },
+  {
+    id: "6782a6a801aac7136b90b7a8",
+    component: Lesson7,
   },
 ];
 
