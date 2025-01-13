@@ -77,9 +77,9 @@ export const Practice = () => {
     }
   }, [currentExercise]);
 
-  const handleWordSelect = (word: string) => {
+  const handleWordSelect = (word: string, index: number) => {
     setSelectedWords([...selectedWords, word]);
-    setAvailableWords(availableWords.filter((w) => w !== word));
+    setAvailableWords(availableWords.filter((_, i) => i !== index));
   };
 
   const handleWordRemove = (index: number) => {
@@ -249,8 +249,8 @@ export const Practice = () => {
         <div className="flex flex-wrap gap-2">
           {availableWords.map((word, index) => (
             <button
-              key={index}
-              onClick={() => handleWordSelect(word)}
+              key={`${word}-${index}`}
+              onClick={() => handleWordSelect(word, index)}
               className="px-3 py-2 bg-gray-700 rounded-full hover:bg-gray-600"
             >
               {word}
