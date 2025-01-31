@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useSession, signOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { useState, useEffect } from "react";
 import logo from "@/public/logo.png";
 import { ScoreAnimation } from "./ScoreAnimation/ScoreAnimation";
@@ -59,12 +59,12 @@ export default function Header() {
               )}
               <ScoreAnimation show={showAnimation} />
             </div>
-            <button
+            {/* <button
               onClick={() => signOut({ callbackUrl: "/" })}
               className="px-3 py-1 bg-red-700/80 hover:bg-red-800/80 rounded-md transition-colors"
             >
               Выйти
-            </button>
+            </button> */}
           </div>
         ) : (
           <Link
