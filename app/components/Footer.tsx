@@ -7,7 +7,7 @@ export default function Footer() {
       <div className="container mx-auto px-4">
         <div className="flex flex-col items-center gap-3">
           <Link
-            href="https://www.instagram.com/savchenkov_andrey1/"
+            href="https://www.instagram.com/sandvik_16/"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
