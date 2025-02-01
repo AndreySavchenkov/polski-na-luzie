@@ -13,8 +13,16 @@ interface LeaderboardUser {
   totalScore: number;
 }
 
+interface LeaderboardData {
+  users: LeaderboardUser[];
+  totalUsers: number;
+}
+
 export const Leaderboard = () => {
-  const [users, setUsers] = useState<LeaderboardUser[]>([]);
+  const [leaderboardData, setLeaderboardData] = useState<LeaderboardData>({
+    users: [],
+    totalUsers: 0,
+  });
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -23,7 +31,7 @@ export const Leaderboard = () => {
         const response = await fetch("/api/users/get-leaderboard");
         if (response.ok) {
           const data = await response.json();
-          setUsers(data);
+          setLeaderboardData(data);
         }
       } catch (error) {
         console.error("Ошибка при загрузке рейтинга:", error);
@@ -49,13 +57,16 @@ export const Leaderboard = () => {
 
   return (
     <div className="w-full max-w-2xl mx-auto mt-8 p-4">
-      <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
+      <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
         <StarIcon className="w-6 h-6 text-yellow-500" />
         Рейтинг пользователей
       </h2>
+      <p className="text-gray-400 mb-6">
+        Топ-10 из {leaderboardData.totalUsers} пользователей
+      </p>
 
       <div className="space-y-4">
-        {users.map((user, index) => (
+        {leaderboardData.users.map((user, index) => (
           <div
             key={user.id}
             className="flex items-center gap-4 p-4 bg-gray-800/30 backdrop-blur-sm rounded-lg border border-gray-700"

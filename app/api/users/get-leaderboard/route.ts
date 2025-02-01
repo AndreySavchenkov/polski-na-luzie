@@ -3,24 +3,27 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
-    const users = await db.user.findMany({
-      select: {
-        id: true,
-        name: true,
-        image: true,
-        progress: {
-          where: {
-            correct: {
-              gte: 3,
+    const [users, totalUsers] = await Promise.all([
+      db.user.findMany({
+        select: {
+          id: true,
+          name: true,
+          image: true,
+          progress: {
+            where: {
+              correct: {
+                gte: 3,
+              },
             },
           },
+          sentenceProgress: true,
         },
-        sentenceProgress: true,
-      },
-    });
+      }),
+      db.user.count(),
+    ]);
 
     if (!users || users.length === 0) {
-      return NextResponse.json([]);
+      return NextResponse.json({ users: [], totalUsers: 0 });
     }
 
     const leaderboard = users
@@ -36,9 +39,9 @@ export async function GET() {
       .sort((a, b) => b.totalScore - a.totalScore)
       .slice(0, 10);
 
-    return NextResponse.json(leaderboard);
+    return NextResponse.json({ users: leaderboard, totalUsers });
   } catch (error) {
     console.error("Ошибка при получении рейтинга:", error);
-    return NextResponse.json([], { status: 500 });
+    return NextResponse.json({ users: [], totalUsers: 0 }, { status: 500 });
   }
 }
